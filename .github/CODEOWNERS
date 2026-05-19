@@ -1,0 +1,9 @@
+# Every PR routes to Muji and Christie by default.
+# Override per directory below as needed.
+
+*                @moji-joji @cmealo
+
+# Examples:
+# /agents/       @MazenMoazzam
+# /infra/        @moji-joji
+# /data/         @christos-handle
