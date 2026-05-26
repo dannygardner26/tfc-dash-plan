@@ -484,7 +484,7 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: linear-gradient(90deg, var(--amber), var(--accent), var(--accent), var(--green));
+      background: linear-gradient(90deg, var(--amber), var(--accent), var(--green));
     }
     .tl-node {
       flex: 1;
@@ -726,9 +726,24 @@
     }
 
     /* ========== RESPONSIVE ========== */
+    /* ========== PRIORITY STRIP + ROADMAP ========== */
+    .priority-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin: 1.25rem 0;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
     @media (max-width: 700px) {
       main { padding: 2.5rem 1.25rem 3rem; }
-      .grid-2, .metrics-grid, .own-grid, .stack-grid, .pro-con-grid { grid-template-columns: 1fr; }
+      .grid-2, .metrics-grid, .own-grid, .stack-grid, .pro-con-grid, .roadmap-grid { grid-template-columns: 1fr; }
+      .priority-strip { grid-template-columns: repeat(2, 1fr); }
       .gallery-grid { grid-template-columns: 1fr; }
       .gallery-grid .wide { grid-column: span 1; }
       .tl { flex-direction: column; gap: 1.5rem; padding-left: 1.75rem; }
@@ -751,7 +766,7 @@
 
     <!-- HERO -->
     <section class="hero">
-      <span class="overline">Philly AI Lab &middot; Gate 1 Review</span>
+      <span class="overline">Philly AI Lab &middot; Post-Meeting Update</span>
       <h1>Personal Brand<br>Dashboard</h1>
       <p class="subtitle">
         A daily-driver analytics dashboard and content ideas engine for Christie Mealo &mdash;
@@ -813,7 +828,7 @@
     <!-- DATA COLLECTION STRATEGY -->
     <section>
       <h2>Data Collection Strategy</h2>
-      <p>We researched every platform's API. Here's what's actually available and our proposed ingestion approach.</p>
+      <p>Muji confirmed a multi-layer ingestion approach. We try the lightest method first and fall back as needed.</p>
       <div class="table-wrap" style="margin-top: 1rem;">
         <table>
           <thead>
@@ -831,66 +846,88 @@
               <td><span class="tag tag-green">Full API</span></td>
               <td>JWT (Admin Key)</td>
               <td>Views, clicks, members, posts, newsletters</td>
-              <td style="color: var(--green); font-weight: 600;">API direct</td>
+              <td style="color: var(--green); font-weight: 600;">API direct (Plan A)</td>
             </tr>
             <tr>
               <td style="font-weight:600; color: var(--text);">LinkedIn</td>
               <td><span class="tag tag-amber">Gated</span></td>
               <td>OAuth 2.0 + approval</td>
               <td>Post analytics, impressions (if approved)</td>
-              <td>Playwright daily cron</td>
+              <td>Internal API replay &rarr; Crawlee &rarr; Playwright</td>
             </tr>
             <tr>
               <td style="font-weight:600; color: var(--text);">Substack</td>
               <td><span class="tag tag-amber">No API</span></td>
               <td>N/A</td>
               <td>No official endpoints</td>
-              <td>Playwright daily cron</td>
+              <td>Internal API replay &rarr; Crawlee &rarr; Playwright</td>
             </tr>
             <tr>
               <td style="font-weight:600; color: var(--text);">Medium</td>
               <td><span class="tag tag-red">Dead</span></td>
               <td>N/A</td>
               <td>API archived Mar 2023</td>
-              <td>Playwright daily cron or drop</td>
+              <td>Internal API replay &rarr; Crawlee &rarr; drop</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <div class="strategy-card">
-        <h3>Playwright MCP &mdash; Universal Fallback</h3>
+        <h3>Multi-Layer Data Ingestion</h3>
         <p>
-          For platforms without APIs, we run a <strong>Playwright MCP server</strong> on a daily cron.
-          It logs into each analytics dashboard, scrapes the numbers, writes structured data to Airtable.
-          One request per platform per day.
+          We prioritize the lightest, most reliable method per platform and escalate only when needed.
+          Each layer is a fallback for the one above it.
         </p>
+        <div class="priority-strip">
+          <div style="background: var(--green-dim); border: 1px solid rgba(74,222,128,0.15); border-radius: 6px; padding: 0.75rem 0.5rem; text-align: center;">
+            <div style="font-family: var(--mono); font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green); margin-bottom: 0.35rem;">Plan A</div>
+            <div style="font-size: 0.82rem; font-weight: 600; color: var(--text);">Official API</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">Ghost confirmed</div>
+          </div>
+          <div style="background: var(--accent-dim); border: 1px solid rgba(56,189,248,0.15); border-radius: 6px; padding: 0.75rem 0.5rem; text-align: center;">
+            <div style="font-family: var(--mono); font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.35rem;">Plan B</div>
+            <div style="font-size: 0.82rem; font-weight: 600; color: var(--text);">Internal API</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">Reverse-engineer endpoints</div>
+          </div>
+          <div style="background: var(--amber-dim); border: 1px solid rgba(251,191,36,0.15); border-radius: 6px; padding: 0.75rem 0.5rem; text-align: center;">
+            <div style="font-family: var(--mono); font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); margin-bottom: 0.35rem;">Plan C</div>
+            <div style="font-size: 0.82rem; font-weight: 600; color: var(--text);">Crawlee</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">Node.js scraping framework</div>
+          </div>
+          <div style="background: var(--red-dim); border: 1px solid rgba(248,113,113,0.15); border-radius: 6px; padding: 0.75rem 0.5rem; text-align: center;">
+            <div style="font-family: var(--mono); font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--red); margin-bottom: 0.35rem;">Plan D</div>
+            <div style="font-size: 0.82rem; font-weight: 600; color: var(--text);">Playwright</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">Browser automation fallback</div>
+          </div>
+        </div>
         <div class="pro-con-grid">
           <div class="pro-box">
-            <h4>Why this works at our scale</h4>
+            <h4>Internal API approach (Plan B)</h4>
             <ul>
-              <li>1 req/platform/day &mdash; barely detectable</li>
-              <li>Near-zero cost (headless browser on cron)</li>
-              <li>Universal &mdash; any platform with a web dashboard</li>
-              <li>No API approval or rate limits</li>
-              <li>Real browser fingerprint</li>
+              <li>Lightweight &mdash; plain HTTP GET, no browser needed</li>
+              <li>Fast execution, low resource usage</li>
+              <li>Inspect DevTools Network tab to find endpoints</li>
+              <li>Replay GET calls with session cookies</li>
+              <li>Works like an unofficial API</li>
             </ul>
           </div>
           <div class="con-box">
-            <h4>Risk: botting detection</h4>
+            <h4>Risks to manage</h4>
             <ul>
-              <li>Platforms can flag automated logins</li>
-              <li>LinkedIn most aggressive at detection</li>
-              <li>Account suspension possible if caught</li>
-              <li>1x/day is low risk but non-zero</li>
-              <li>Fallback: manual XLS/CSV export</li>
+              <li>Origin URL / referer checking on some platforms</li>
+              <li>Session cookies expire &mdash; need refresh strategy</li>
+              <li>Endpoints may change without notice</li>
+              <li>CORS restrictions if calling from browser</li>
+              <li>Fallback: escalate to Crawlee or Playwright</li>
             </ul>
           </div>
         </div>
         <p style="font-size: 0.85rem; margin-bottom: 0; color: var(--text-dim);">
-          <strong style="color: var(--text);">Recommendation:</strong> Ghost via API. LinkedIn, Substack, Medium via Playwright MCP daily cron.
-          If LinkedIn API approval comes through, migrate off Playwright. API is always better long-term &mdash;
-          Playwright is our bridge to get data flowing from day one.
+          <strong style="color: var(--text);">Confirmed approach:</strong> Ghost via official API. LinkedIn, Substack, Medium &mdash;
+          reverse-engineer internal API endpoints first (inspect browser network requests, replay with session cookies).
+          If that fails, use Crawlee (like Scrapy but for Node.js). Playwright browser automation is the last resort.
+          LinkedIn official API application runs in parallel.
         </p>
       </div>
     </section>
@@ -900,19 +937,27 @@
       <h2>System Architecture</h2>
       <div class="card" style="padding: 2rem;">
         <div class="arch">
-          <div class="arch-row">
-            <div class="arch-box src src-mid">LinkedIn</div>
-            <div class="arch-box src src-ok">Ghost</div>
-            <div class="arch-box src src-mid">Substack</div>
-            <div class="arch-box src src-bad">Medium</div>
+          <div style="display: flex; justify-content: center; gap: 0.65rem; flex-wrap: wrap; align-items: flex-end;">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div class="arch-box src src-ok" style="border-color: rgba(74,222,128,0.35); min-width: 100px;">Google Drive</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0;">
+              <div class="arch-row" style="margin-bottom: 0;">
+                <div class="arch-box src src-mid">LinkedIn</div>
+                <div class="arch-box src src-ok">Ghost</div>
+                <div class="arch-box src src-mid">Substack</div>
+                <div class="arch-box src src-bad">Medium</div>
+              </div>
+            </div>
           </div>
-          <div style="display: flex; justify-content: center; gap: 1.75rem; padding: 0.3rem 0;">
-            <span class="label">playwright</span>
-            <span class="label" style="color: var(--green);">api</span>
-            <span class="label">playwright</span>
-            <span class="label">playwright</span>
+          <div style="display: flex; justify-content: center; gap: 0; padding: 0.3rem 0;">
+            <span class="label" style="min-width: 110px; text-align: center; color: var(--green);">docs</span>
+            <span class="label" style="min-width: 90px; text-align: center;">internal api / crawlee</span>
+            <span class="label" style="min-width: 90px; text-align: center; color: var(--green);">api</span>
+            <span class="label" style="min-width: 90px; text-align: center;">internal api / crawlee</span>
+            <span class="label" style="min-width: 90px; text-align: center;">internal api / crawlee</span>
           </div>
-          <div class="arch-flow">&darr;&ensp;&darr;&ensp;&darr;&ensp;&darr;</div>
+          <div class="arch-flow">&darr;&ensp;&darr;&ensp;&darr;&ensp;&darr;&ensp;&darr;</div>
 
           <div class="arch-brain-wrap">
             <div class="arch-brain-label">The Brain</div>
@@ -923,8 +968,12 @@
               </div>
               <div class="arch-divider"></div>
               <div class="arch-half">
-                <div class="arch-half-label">Right</div>
+                <div class="arch-half-label">Right &mdash; Pinecone</div>
                 <div class="arch-half-value">Vector DB</div>
+                <div style="display: flex; flex-direction: column; gap: 0.15rem; margin-top: 0.35rem;">
+                  <span style="font-family: var(--mono); font-size: 0.6rem; color: var(--text-muted);">ns: Mazen &rarr; surfaced news</span>
+                  <span style="font-family: var(--mono); font-size: 0.6rem; color: var(--text-muted);">ns: Danny/Kush &rarr; Christie's writing</span>
+                </div>
               </div>
             </div>
             <div style="margin-top: 0.3rem;"><code>tfc-brain</code></div>
@@ -1074,12 +1123,16 @@
         </div>
         <div class="stack-item">
           <div class="label">AI / LLM</div>
-          <div class="stack-value">Claude</div>
+          <div class="stack-value">Gemini (free tier)</div>
         </div>
         <div class="stack-item">
           <div class="label">Scraping</div>
-          <div class="stack-value">Playwright MCP</div>
+          <div class="stack-value">Crawlee + Internal API</div>
         </div>
+      </div>
+      <div style="margin-top: 1rem; text-align: center; padding: 0.65rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;">
+        <span class="label" style="margin-right: 0.5rem;">Also using</span>
+        <code>shadcn/ui</code> &middot; <code>TanStack Query</code> &middot; <code>Magic UI</code>
       </div>
       <div class="repo-row">
         <span class="repo-chip">tfc-dash</span>
@@ -1091,28 +1144,23 @@
 
     <!-- TIMELINE -->
     <section>
-      <h2>Gate Timeline</h2>
+      <h2>Milestone Timeline</h2>
       <div class="tl">
         <div class="tl-node">
-          <div class="tl-date">May 29</div>
-          <div class="tl-title">Gate 1</div>
-          <div class="tl-desc">Scope, wireframes, stack, work split</div>
-          <div class="tl-badge">3 days</div>
-        </div>
-        <div class="tl-node">
           <div class="tl-date">June 26</div>
-          <div class="tl-title">Gate 2</div>
-          <div class="tl-desc">MVP &mdash; LinkedIn + Ghost live, skeleton deployed</div>
+          <div class="tl-title">M1 &mdash; MVP</div>
+          <div class="tl-desc">UI built + existing Airtable data rendering. Even dummy data is OK &mdash; prove the interface works.</div>
+          <div class="tl-badge">4 weeks</div>
         </div>
         <div class="tl-node">
           <div class="tl-date">July 24</div>
-          <div class="tl-title">Gate 3</div>
-          <div class="tl-desc">3+ sources, AI prototype, article feed</div>
+          <div class="tl-title">M2 &mdash; Pipeline</div>
+          <div class="tl-desc">Data ingestion pipeline perfected, UI polished, all features working end-to-end.</div>
         </div>
         <div class="tl-node">
           <div class="tl-date">Aug 17</div>
-          <div class="tl-title">Gate 4</div>
-          <div class="tl-desc">Ship &mdash; daily-use ready, documented</div>
+          <div class="tl-title">M3 &mdash; Enhance</div>
+          <div class="tl-desc">Auto-drafts, content prediction, AI suggestions, stretch features.</div>
         </div>
       </div>
     </section>
@@ -1125,7 +1173,7 @@
           <div class="label" style="color: var(--accent); margin-bottom: 0.75rem;">Danny Gardner &mdash; Primary</div>
           <ul>
             <li>Full dashboard build (both tabs)</li>
-            <li>All API + Playwright integrations</li>
+            <li>All API + data ingestion pipeline</li>
             <li>Airtable schema design</li>
             <li>Architecture &amp; deployment</li>
             <li>Core component library</li>
@@ -1157,15 +1205,15 @@
           <div class="risk-body">
             <h4>Medium API is dead</h4>
             <p>API archived March 2023. No programmatic path.</p>
-            <p class="risk-fallback">Plan: Playwright scrape. Fallback: RSS titles or drop from scope.</p>
+            <p class="risk-fallback">Plan: Reverse-engineer internal API endpoints. Fallback: Crawlee scrape, then drop from scope.</p>
           </div>
         </div>
         <div class="card risk-item">
           <span class="risk-sev sev-high">HIGH</span>
           <div class="risk-body">
-            <h4>Playwright botting detection</h4>
-            <p>LinkedIn is aggressive at detecting automation. Substack and Medium less so.</p>
-            <p class="risk-fallback">Mitigated by: 1 req/day, real browser fingerprint. Fallback: manual export.</p>
+            <h4>Internal API session management</h4>
+            <p>Session cookies expire. Origin/referer checking may block replayed requests. Endpoints can change without notice.</p>
+            <p class="risk-fallback">Mitigated by: cookie refresh strategy, request header spoofing. Fallback: escalate to Crawlee or Playwright.</p>
           </div>
         </div>
         <div class="card risk-item">
@@ -1173,68 +1221,137 @@
           <div class="risk-body">
             <h4>LinkedIn API approval timeline</h4>
             <p>Analytics API requires OAuth + case-by-case approval. Could take weeks.</p>
-            <p class="risk-fallback">Plan: Playwright now, API application in parallel, migrate if approved.</p>
+            <p class="risk-fallback">Plan: Internal API scraping now, official API application in parallel, migrate when approved.</p>
           </div>
         </div>
         <div class="card risk-item">
           <span class="risk-sev sev-med">MED</span>
           <div class="risk-body">
             <h4>Substack has no official API</h4>
-            <p>Unofficial Python libs reverse-engineer endpoints. Could break anytime.</p>
-            <p class="risk-fallback">Plan: Playwright preferred over unofficial libs. Fallback: RSS + manual.</p>
+            <p>Internal endpoints may be discoverable via DevTools network inspection. Could break anytime.</p>
+            <p class="risk-fallback">Plan: Internal API replay first, Crawlee second. Fallback: RSS + manual.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- QUESTIONS -->
+    <!-- FEATURE ROADMAP -->
+    <section>
+      <h2>Feature Roadmap</h2>
+      <p>Features pitched by Kush and approved by Muji. Everything below targets M3 unless noted otherwise.</p>
+      <div class="roadmap-grid">
+        <div class="card" style="border-top: 2px solid var(--accent); padding-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+            <h3 style="margin-bottom: 0;">RAG Pipeline Chatbot</h3>
+            <span class="tag tag-accent">M3 / Stretch</span>
+          </div>
+          <p style="margin-bottom: 0;">Talk-to-your-data interface over Christie's content. Queries the vector DB via RAG pipeline to answer questions about past performance and content themes.</p>
+        </div>
+        <div class="card" style="border-top: 2px solid var(--accent); padding-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+            <h3 style="margin-bottom: 0;">Content Suggestions</h3>
+            <span class="tag tag-accent">M3 / Stretch</span>
+          </div>
+          <p style="margin-bottom: 0;">Viral post detected &rarr; find similar news articles &rarr; generate content angle suggestions. Connects the Performance and Ideas tabs.</p>
+        </div>
+        <div class="card" style="border-top: 2px solid var(--accent); padding-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+            <h3 style="margin-bottom: 0;">Draft Post Generation</h3>
+            <span class="tag tag-accent">M3 / Stretch</span>
+          </div>
+          <p style="margin-bottom: 0;">Auto-generate draft posts based on trending articles and Christie's voice. <span style="color: var(--amber);">Cost warning:</span> LLM calls per draft &mdash; monitor token usage.</p>
+        </div>
+        <div class="card" style="border-top: 2px solid var(--accent); padding-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+            <h3 style="margin-bottom: 0;">Performance Prediction</h3>
+            <span class="tag tag-accent">M3 / Stretch</span>
+          </div>
+          <p style="margin-bottom: 0;">Predict how a draft post will perform based on historical engagement patterns, topic relevance, and posting time.</p>
+        </div>
+        <div class="card" style="border-top: 2px solid var(--accent); padding-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+            <h3 style="margin-bottom: 0;">Content Calendar + Archive</h3>
+            <span class="tag tag-accent">M3 / Stretch</span>
+          </div>
+          <p style="margin-bottom: 0;">Calendar view of scheduled and published content across all platforms. Draft archive for work-in-progress pieces.</p>
+        </div>
+        <div class="card" style="border-top: 2px solid var(--amber); padding-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+            <h3 style="margin-bottom: 0;">Chat Widget + Voice</h3>
+            <span class="tag tag-amber">Post-MVP</span>
+          </div>
+          <p style="margin-bottom: 0;">Persistent chat widget on the dashboard and voice interface for hands-free queries. Depends on RAG pipeline being solid first.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DECISIONS MADE -->
     <section>
       <div class="questions-wrap">
-        <h2>Questions for Muji</h2>
+        <h2>Decisions Made</h2>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 1.25rem;">Resolved with Muji &mdash; May 26, 2026</p>
         <ol class="q-list">
           <li>
             <div>
-              <div class="q-title">Playwright MCP approach</div>
-              <div class="q-ctx">Comfortable with daily cron scraping for LinkedIn/Substack/Medium? Any concerns about account risk at this frequency?</div>
+              <div class="q-title">Scraping strategy</div>
+              <div class="q-ctx">Internal API replay first (inspect browser network requests, replay GET calls with session cookies). Crawlee second. Playwright browser automation is the last resort.</div>
             </div>
           </li>
           <li>
             <div>
-              <div class="q-title">Medium &mdash; drop or scrape?</div>
-              <div class="q-ctx">API dead, Playwright is our only option. Worth the effort, or cut it?</div>
+              <div class="q-title">Medium</div>
+              <div class="q-ctx">Keep in scope. Try scraping via internal API &mdash; drop if not viable. Don't burn time on it.</div>
             </div>
           </li>
           <li>
             <div>
-              <div class="q-title">LinkedIn API approval</div>
-              <div class="q-ctx">Start the approval process in parallel with Playwright, or just stick with scraping?</div>
+              <div class="q-title">LinkedIn API</div>
+              <div class="q-ctx">Parallel track &mdash; scrape now via internal API, apply for official API access simultaneously. Migrate when approved.</div>
             </div>
           </li>
           <li>
             <div>
-              <div class="q-title">Vector DB recommendation</div>
-              <div class="q-ctx">Pinecone vs Supabase pgvector for the Ideas tab AI features?</div>
+              <div class="q-title">Vector DB</div>
+              <div class="q-ctx">Pinecone confirmed. Mazen owns the setup &mdash; meeting tomorrow to finalize namespace structure.</div>
             </div>
           </li>
           <li>
             <div>
-              <div class="q-title">Airtable schema</div>
-              <div class="q-ctx">Design ourselves, or existing Trifecta pattern to follow?</div>
+              <div class="q-title">Airtable</div>
+              <div class="q-ctx">We design our own base and schema from scratch. Show Muji for review once drafted.</div>
             </div>
           </li>
           <li>
             <div>
-              <div class="q-title">Gate 1 wireframes</div>
-              <div class="q-ctx">Figma, coded prototypes, or is this plan + design proposals sufficient for Thursday?</div>
+              <div class="q-title">LLM choice</div>
+              <div class="q-ctx">Gemini free tier to start. Claude later if needed for higher-quality generation or if budget allows.</div>
             </div>
           </li>
           <li>
             <div>
-              <div class="q-title">AI feature &mdash; Claude confirmed?</div>
-              <div class="q-ctx">Anthropic key already in .env template. Confirmed for talk-to-your-data?</div>
+              <div class="q-title">UI design</div>
+              <div class="q-ctx">Christie decides. Danny emailing her the five design proposals for her to pick the direction.</div>
             </div>
           </li>
         </ol>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);">
+          <h3 style="font-family: var(--mono); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); margin-bottom: 0.75rem;">Still Open</h3>
+          <ul style="list-style: none; padding: 0;">
+            <li style="font-size: 0.85rem; color: var(--text-dim); padding: 0.3rem 0; padding-left: 1rem; position: relative;">
+              <span style="position: absolute; left: 0; color: var(--amber);">&bull;</span>
+              Mazen's vector DB namespace structure (meeting tomorrow)
+            </li>
+            <li style="font-size: 0.85rem; color: var(--text-dim); padding: 0.3rem 0; padding-left: 1rem; position: relative;">
+              <span style="position: absolute; left: 0; color: var(--amber);">&bull;</span>
+              Christie's design preference (proposals emailed)
+            </li>
+            <li style="font-size: 0.85rem; color: var(--text-dim); padding: 0.3rem 0; padding-left: 1rem; position: relative;">
+              <span style="position: absolute; left: 0; color: var(--amber);">&bull;</span>
+              Airtable schema review with Muji
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 

@@ -1,0 +1,163 @@
+KUSH BRIEFING — Post-Muji Meeting (May 26, 2026)
+==================================================
+
+Hey Kush, here's the full download from the Muji meeting. Read this top to bottom — it covers what was decided, what I'm building, and what you should focus on.
+
+
+WHAT MUJI DECIDED
+-----------------
+
+Milestones (replaces the 4-gate system):
+  M1: Bare minimum MVP — UI rendering existing Airtable data (even dummy data is fine)
+  M2: Data ingestion pipeline working perfectly + UI polished + base features
+  M3: Enhancement — auto-drafts, content prediction, AI suggestions (YOUR features live here)
+
+Scraping:
+  - Ghost: use their API directly (JWT auth, fully supported)
+  - LinkedIn/Substack/Medium: try reverse-engineering internal API endpoints first
+    (inspect network requests in browser, replay the GET calls)
+  - If that fails: use Scrapy or Crawlee (Node.js scraping framework)
+  - Playwright is last resort fallback, not Plan A
+  - Muji is fine with low-frequency scraping (1x/day won't get flagged)
+
+Vector DB:
+  - Mazen owns the vector DB (likely Pinecone)
+  - Muji is meeting Mazen tomorrow to finalize
+  - We get our own namespace: "Christie's writing"
+  - Mazen gets: "surfaced news" namespace
+  - We READ from both namespaces (ours for AI queries, Mazen's for Ideas tab)
+  - Christie's content is in Google Drive ("Trifecta Right Brain" folder) — don't scrape her profiles
+
+LLM:
+  - Start with Gemini free API, NOT Claude (cost reasons)
+  - If Gemini results are bad, test same prompt in Claude to see if it's the prompt or the model
+  - Claude comes later once features are validated
+
+UI Design:
+  - Muji deferred to Christie — I'm emailing her the 5 design proposals
+  - Use shadcn/ui + TanStack Query + Magic UI for the real build
+  - Muji said the AI-generated mockups "looked kind of bad" — shadcn will fix that
+
+Airtable:
+  - We own our own analytics base
+  - Design the schema ourselves, show Muji, build around it
+  - Try to keep it to 1 table unless normalization is needed
+
+
+WHAT I'M BUILDING (Danny — core)
+---------------------------------
+
+- Full Next.js + Tailwind + shadcn/ui scaffold
+- Performance tab (cross-platform analytics from Airtable)
+- Ideas tab (article feed from Mazen's vector DB namespace)
+- Ghost API integration
+- LinkedIn/Substack/Medium data ingestion (scraping or internal API)
+- Airtable schema design + SDK integration
+- Google Drive → Vector DB ingestion pipeline (Christie's writing namespace)
+- Core component library
+- Deployment to Vercel
+
+
+WHAT YOU SHOULD FOCUS ON (Kush — features + frontend)
+------------------------------------------------------
+
+Your features that Muji approved (all M3 — build after M1/M2 are solid):
+
+1. RAG PIPELINE FOR CHATBOT
+   - Build a retrieval-augmented generation pipeline
+   - Queries Christie's writing namespace in the vector DB
+   - User asks a natural language question, gets answers grounded in Christie's content
+   - Use Gemini free API for completions initially
+
+2. VIRAL POST → CONTENT SUGGESTION ENGINE
+   - Map Christie's viral posts (from analytics) to their embeddings in the vector DB
+   - Find recent news (from Mazen's surfaced-articles namespace) that's similar
+   - Suggest: "Your post about X went viral. Similar topic Y is trending now — write about it"
+   - This is the killer feature Muji was most excited about
+
+3. DRAFT POST GENERATION
+   - Generate first drafts for Christie based on trending topics + her writing style
+   - Muji warned: be careful about API costs here (multi-call pipelines get expensive fast)
+   - His suggestion: generate prompts for Christie to paste into Claude herself, rather than auto-generating full posts
+
+4. CONTENT PERFORMANCE PREDICTION
+   - Given a draft, predict how it will perform based on historical data
+   - Compare draft embeddings to past viral posts
+   - Tell Christie: "this has high/low propensity to perform well given current news"
+
+5. CONTENT CALENDAR
+   - Archive of drafts with predicted performance
+   - Christie presses a button → resurfaces a draft when news aligns
+   - Muji called this a "content calendar type of archive"
+
+6. CHAT + VOICE INTERFACE (post-MVP)
+   - Bottom-right chat widget (like Intercom)
+   - On mobile: fullscreen when tapped
+   - Voice button (either on main page or inside chat bar)
+   - This is a UI layer on top of the RAG pipeline
+
+
+HOW THE WIDGET SYSTEM WORKS
+-----------------------------
+
+I'm building the dashboard with a modular widget interface. You build self-contained feature modules.
+
+Your widget contract:
+  - Export a default React component
+  - Receive a typed `data` prop with analytics data
+  - Self-contained — no imports from core dashboard internals
+  - Place your widgets in: src/components/widgets/
+  - I import and render them in a grid layout
+
+Example:
+  // src/components/widgets/content-suggestions.tsx
+  export default function ContentSuggestions({ data }: WidgetProps) {
+    // your self-contained feature
+  }
+
+I'll have a README in the widgets folder with the full TypeScript interface.
+
+
+TECH STACK
+----------
+
+Framework:     Next.js 15 (App Router) + TypeScript
+Styling:       Tailwind CSS + shadcn/ui + Magic UI (for animations)
+Data:          TanStack Query (fetching/caching) + Airtable SDK
+Vector DB:     Pinecone (Mazen sets up, we use our namespace)
+LLM:           Gemini free API (swap to Claude later)
+Hosting:       Vercel
+Scraping:      Crawlee or internal API replay (Node.js)
+Repo:          Trifecta-Enterprises/tfc-dash (we need push access — Danny asking Muji)
+
+
+TIMELINE
+--------
+
+NOW → May 29 (Gate 1):
+  Danny: scaffold repo, Airtable schema, plan doc for standup
+  Kush: research RAG pipeline approaches, prototype widget interface
+
+June 1 → June 26 (M1):
+  Danny: MVP dashboard with Performance tab, Ghost + Airtable data live
+  Kush: Ideas tab frontend, article feed rendering, shadcn polish
+
+June 27 → July 24 (M2):
+  Danny: Full data ingestion pipeline, all platforms flowing
+  Kush: UI polish, responsive/mobile, data visualization
+
+July 25 → Aug 17 (M3):
+  Kush: RAG chatbot, content suggestions, draft gen, performance prediction
+  Danny: Integration, deployment, documentation
+
+
+WHAT TO DO RIGHT NOW
+--------------------
+
+1. Read this briefing
+2. Set up your dev environment (clone tfc-dash, npm install once I push the scaffold)
+3. Research RAG pipeline patterns — how to query Pinecone + feed results to Gemini
+4. Prototype a simple widget component following the contract above
+5. DM Danny on WhatsApp if you have questions
+
+Let's ship this.
