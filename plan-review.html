@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TFC Dashboard — Technical Plan Review</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #14141f;
+      --surface-hover: #1a1a2e;
+      --border: rgba(255,255,255,0.08);
+      --border-accent: rgba(99,102,241,0.3);
+      --accent: #6366f1;
+      --accent-glow: rgba(99,102,241,0.15);
+      --green: #22c55e;
+      --green-bg: rgba(34,197,94,0.1);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245,158,11,0.1);
+      --red: #ef4444;
+      --red-bg: rgba(239,68,68,0.1);
+      --orange: #f97316;
+      --orange-bg: rgba(249,115,22,0.1);
+      --text: #f1f1f4;
+      --text-secondary: #8b8b9e;
+      --text-muted: #5a5a6e;
+      --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+    }
+
+    section { margin-bottom: 3.5rem; }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #f1f1f4 0%, #6366f1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      color: var(--text);
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    p { color: var(--text-secondary); margin-bottom: 0.75rem; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .card-glow {
+      border-color: var(--border-accent);
+      box-shadow: 0 0 40px var(--accent-glow);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .chip-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+    .chip-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+    .chip-red { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+    .chip-orange { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(249,115,22,0.2); }
+    .chip-accent { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(99,102,241,0.2); }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      background: rgba(99,102,241,0.1);
+      color: var(--accent);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
+
+    /* ========== HERO ========== */
+    .hero { text-align: center; padding: 2rem 0 1rem; }
+    .hero .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-top: 0.75rem;
+      font-weight: 500;
+    }
+    .hero .meta {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .hero .meta span { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+    /* ========== GRID ========== */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ========== TAB CARDS ========== */
+    .tab-card { position: relative; overflow: hidden; }
+    .tab-card .tab-label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 0.35rem 1rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .tab-card .tab-label.perf { background: linear-gradient(90deg, rgba(99,102,241,0.2), transparent); color: var(--accent); }
+    .tab-card .tab-label.ideas { background: linear-gradient(90deg, rgba(34,197,94,0.2), transparent); color: var(--green); }
+    .tab-card .content { padding-top: 1.5rem; }
+    .tab-card ul { list-style: none; padding: 0; }
+    .tab-card li {
+      padding: 0.4rem 0;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    .tab-card li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.75rem;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    /* ========== TABLE ========== */
+    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    thead { background: var(--surface); }
+    th {
+      text-align: left;
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr { background: var(--bg); }
+    tbody tr:hover { background: var(--surface); }
+
+    /* ========== ARCHITECTURE ========== */
+    .arch { text-align: center; }
+    .arch-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .arch-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      position: relative;
+    }
+    .arch-box.source { min-width: 100px; text-align: center; }
+    .arch-box.source.green { border-color: rgba(34,197,94,0.3); color: var(--green); }
+    .arch-box.source.amber { border-color: rgba(245,158,11,0.3); color: var(--amber); }
+    .arch-box.source.red { border-color: rgba(239,68,68,0.3); color: var(--red); }
+
+    .arch-connector {
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem 0;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+    }
+
+    .arch-brain {
+      background: var(--surface);
+      border: 1px solid var(--border-accent);
+      box-shadow: 0 0 30px var(--accent-glow);
+      border-radius: 14px;
+      padding: 1.25rem 2rem;
+      display: inline-flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    .arch-brain .half {
+      text-align: center;
+    }
+    .arch-brain .half-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .arch-brain .half-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .arch-brain .divider {
+      width: 1px;
+      height: 2rem;
+      background: var(--border);
+    }
+    .arch-brain-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .arch-dash {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 2rem;
+      display: inline-block;
+    }
+    .arch-repo {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    /* ========== ALERT CARD ========== */
+    .alert {
+      border-left: 3px solid var(--amber);
+      background: var(--amber-bg);
+      border-radius: 0 10px 10px 0;
+      padding: 1.25rem 1.5rem;
+    }
+    .alert h3 { color: var(--amber); margin-bottom: 0.5rem; }
+    .alert p { color: var(--text-secondary); margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ========== TIMELINE ========== */
+    .timeline {
+      display: flex;
+      position: relative;
+      padding: 1rem 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 2.15rem;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--amber), var(--accent), var(--accent), var(--green));
+      border-radius: 1px;
+    }
+    .timeline-node {
+      flex: 1;
+      position: relative;
+      text-align: center;
+      padding-top: 2.5rem;
+    }
+    .timeline-node::before {
+      content: '';
+      position: absolute;
+      top: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 3px solid var(--accent);
+      z-index: 1;
+    }
+    .timeline-node:first-child::before {
+      border-color: var(--amber);
+      background: var(--amber);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .timeline-node:last-child::before { border-color: var(--green); }
+    .timeline-date {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .timeline-node:first-child .timeline-date { color: var(--amber); }
+    .timeline-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 0.35rem 0 0.25rem;
+    }
+    .timeline-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .timeline-urgent {
+      display: inline-block;
+      background: var(--amber-bg);
+      color: var(--amber);
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      margin-top: 0.35rem;
+      border: 1px solid rgba(245,158,11,0.2);
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(245,158,11,0); }
+    }
+
+    /* ========== METRICS ========== */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .metric-card { padding: 1.25rem; }
+    .metric-card h3 { font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .metric-list { list-style: none; padding: 0; }
+    .metric-list li {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      padding: 0.3rem 0;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .metric-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.65rem;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* ========== OWNERSHIP ========== */
+    .ownership-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .owner-card { position: relative; overflow: hidden; }
+    .owner-card .owner-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.75rem;
+    }
+    .owner-card .primary { color: var(--accent); }
+    .owner-card .modular { color: var(--green); }
+    .owner-card ul { list-style: none; padding: 0; }
+    .owner-card li {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      padding: 0.35rem 0;
+    }
+    .plugin-note {
+      grid-column: 1 / -1;
+      border-left: 3px solid var(--green);
+      background: var(--green-bg);
+      border-radius: 0 10px 10px 0;
+      padding: 1rem 1.25rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* ========== RISKS ========== */
+    .risk-grid { display: grid; gap: 0.75rem; }
+    .risk-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+    }
+    .risk-card .severity {
+      flex-shrink: 0;
+      width: 3.5rem;
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0;
+      border-radius: 6px;
+      margin-top: 0.15rem;
+    }
+    .sev-critical { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+    .sev-high { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+    .sev-medium { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(249,115,22,0.2); }
+    .risk-card .risk-body h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .risk-card .risk-body p { font-size: 0.82rem; margin-bottom: 0; }
+    .risk-fallback { color: var(--text-muted); font-style: italic; }
+
+    /* ========== QUESTIONS ========== */
+    .questions-section {
+      background: var(--surface);
+      border: 2px solid var(--border-accent);
+      border-radius: 14px;
+      padding: 2rem;
+      box-shadow: 0 0 60px var(--accent-glow);
+    }
+    .questions-section h2 {
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .question-list { list-style: none; padding: 0; counter-reset: q; }
+    .question-list li {
+      counter-increment: q;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .question-list li:last-child { border-bottom: none; padding-bottom: 0; }
+    .question-list li::before {
+      content: counter(q);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid rgba(99,102,241,0.2);
+    }
+    .question-list .q-title { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+    .question-list .q-context { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    /* ========== STACK ========== */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+    .stack-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .stack-item .stack-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .stack-item .stack-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .repo-grid {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .repo-badge {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      padding: 0.4rem 0.85rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+    }
+    .repo-badge .repo-status {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-left: 0.35rem;
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      text-align: center;
+      padding: 2rem 0 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 640px) {
+      main { padding: 2rem 1rem 3rem; }
+      .grid-2, .metrics-grid, .ownership-grid, .stack-grid { grid-template-columns: 1fr; }
+      .timeline { flex-direction: column; gap: 1.5rem; padding-left: 2rem; }
+      .timeline::before {
+        top: 0; bottom: 0; left: 0.55rem;
+        width: 2px; height: auto; right: auto;
+      }
+      .timeline-node { text-align: left; padding-top: 0; padding-left: 1.5rem; }
+      .timeline-node::before { left: -1.45rem; top: 0.2rem; }
+      .arch-brain { flex-direction: column; gap: 0.75rem; padding: 1rem; }
+      .arch-brain .divider { width: 100%; height: 1px; }
+      .arch-row { gap: 0.5rem; }
+      .arch-box { font-size: 0.75rem; padding: 0.5rem 0.75rem; }
+      .questions-section { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <h1>Personal Brand Dashboard</h1>
+      <p class="subtitle">Technical Plan Review</p>
+      <div class="meta">
+        <span>Danny Gardner &amp; Kushagra Behl</span>
+        <span>Philly AI Lab 2026</span>
+        <span>May 26, 2026</span>
+      </div>
+      <div class="meta" style="margin-top:0.5rem;">
+        <span><span class="chip chip-accent">For Muji Akbar</span></span>
+        <span><span class="chip chip-accent">Trifecta Enterprises</span></span>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- EXECUTIVE SUMMARY -->
+    <section>
+      <div class="card card-glow">
+        <p style="color: var(--text); font-size: 1rem; line-height: 1.7; margin-bottom: 0;">
+          A <strong>two-tab web dashboard</strong> for Christie Mealo to track her content performance across LinkedIn, Ghost, Substack, and Medium &mdash; and discover content ideas powered by AI. Built with <strong>Next.js + Tailwind + Vercel</strong>, reading structured analytics from <strong>Airtable</strong> and unstructured content from a <strong>Vector DB</strong>. The goal: one screen Christie opens every morning.
+        </p>
+      </div>
+    </section>
+
+    <!-- TWO TABS -->
+    <section>
+      <h2>The Two Tabs</h2>
+      <div class="grid-2">
+        <div class="card tab-card">
+          <div class="tab-label perf">Performance</div>
+          <div class="content">
+            <h3>Cross-Platform Analytics</h3>
+            <ul>
+              <li>LinkedIn growth, engagement, top posts</li>
+              <li>Ghost newsletter: opens, clicks, subscribers</li>
+              <li>Substack + Medium metrics (where accessible)</li>
+              <li>Cross-channel comparison &amp; trends</li>
+            </ul>
+            <div style="margin-top: 0.75rem;">
+              <span class="chip chip-accent">Data: Airtable</span>
+            </div>
+          </div>
+        </div>
+        <div class="card tab-card">
+          <div class="tab-label ideas">Ideas</div>
+          <div class="content">
+            <h3>Content Discovery + AI</h3>
+            <ul>
+              <li>Curated article feed from News Aggregator</li>
+              <li>Editorial captions per article</li>
+              <li>Trending topics across surfaced content</li>
+              <li>AI &ldquo;talk to your data&rdquo; (stretch goal)</li>
+            </ul>
+            <div style="margin-top: 0.75rem;">
+              <span class="chip chip-green">Data: Vector DB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- API FEASIBILITY -->
+    <section>
+      <h2>API Feasibility Matrix</h2>
+      <p>Research into what data we can actually pull programmatically from each platform.</p>
+      <div class="table-wrap" style="margin-top: 1rem;">
+        <table>
+          <thead>
+            <tr>
+              <th>Platform</th>
+              <th>API Status</th>
+              <th>Auth</th>
+              <th>What We Get</th>
+              <th>Fallback</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600; color: var(--text);">Ghost</td>
+              <td><span class="chip chip-green">Full API</span></td>
+              <td>JWT (Admin Key)</td>
+              <td>Views, clicks, members, posts, newsletters</td>
+              <td>&mdash;</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600; color: var(--text);">LinkedIn</td>
+              <td><span class="chip chip-amber">Gated</span></td>
+              <td>OAuth 2.0 + approval</td>
+              <td>Post analytics, impressions (if approved)</td>
+              <td>Manual XLS export</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600; color: var(--text);">Substack</td>
+              <td><span class="chip chip-amber">No Official API</span></td>
+              <td>Unofficial libs</td>
+              <td>Posts via reverse-engineered endpoints (fragile)</td>
+              <td>RSS feed + manual</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600; color: var(--text);">Medium</td>
+              <td><span class="chip chip-red">Deprecated</span></td>
+              <td>N/A</td>
+              <td>Nothing &mdash; API archived March 2023</td>
+              <td>RSS titles or drop</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section>
+      <h2>System Architecture</h2>
+      <div class="card" style="padding: 2rem;">
+        <div class="arch">
+          <div class="arch-row">
+            <div class="arch-box source amber">LinkedIn</div>
+            <div class="arch-box source green">Ghost</div>
+            <div class="arch-box source amber">Substack</div>
+            <div class="arch-box source red">Medium</div>
+          </div>
+          <div class="arch-connector">&#8595; &#8595; &#8595; &#8595;</div>
+
+          <div style="margin-bottom: 0.25rem;">
+            <div class="arch-brain-title">The Brain</div>
+          </div>
+          <div class="arch-brain">
+            <div class="half">
+              <div class="half-label">Left Brain</div>
+              <div class="half-value">Airtable</div>
+              <div class="arch-repo">structured data</div>
+            </div>
+            <div class="divider"></div>
+            <div class="half">
+              <div class="half-label">Right Brain</div>
+              <div class="half-value">Vector DB</div>
+              <div class="arch-repo">unstructured content</div>
+            </div>
+          </div>
+          <div class="arch-repo" style="margin-top: 0.35rem;"><code>tfc-brain</code></div>
+
+          <div class="arch-connector">&#8595;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&#8595;</div>
+
+          <div class="arch-row" style="margin-bottom: 0.25rem;">
+            <div class="arch-box" style="border-color: rgba(99,102,241,0.3); min-width: 140px;">
+              Performance Tab
+            </div>
+            <div class="arch-box" style="border-color: rgba(34,197,94,0.3); min-width: 140px;">
+              Ideas Tab
+            </div>
+          </div>
+
+          <div class="arch-connector">&#8595;</div>
+
+          <div class="arch-dash">
+            <div style="font-weight: 700; font-size: 1rem;">TFC Dashboard</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">Next.js + Tailwind + Vercel</div>
+          </div>
+          <div class="arch-repo"><code>tfc-dash</code></div>
+
+          <div style="margin-top: 1.25rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <span class="chip chip-accent" style="font-size: 0.7rem;">tfc-news-agg feeds Ideas tab</span>
+            <span class="chip chip-accent" style="font-size: 0.7rem;">tfc-crm-helper shares Airtable</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BRAIN ALERT -->
+    <section>
+      <div class="alert">
+        <h3>Brain Ownership Change</h3>
+        <p>
+          Christos Petridis was originally assigned as Brain project owner. He is no longer on the project.
+          The team is sharing Brain responsibility &mdash; but there is <strong>no single owner</strong> of the Airtable schema or Vector DB architecture.
+          This creates risk of schema drift and nobody maintaining the ingestion pipeline. <strong>We need Muji's guidance on ownership structure.</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- METRICS STRATEGY -->
+    <section>
+      <h2>Metrics Strategy</h2>
+      <p>What to track per platform &mdash; and why it matters for Christie's personal brand.</p>
+      <div class="metrics-grid" style="margin-top: 1rem;">
+        <div class="card metric-card">
+          <h3>LinkedIn</h3>
+          <ul class="metric-list">
+            <li>Impressions &amp; reach per post</li>
+            <li>Engagement rate (likes + comments / impressions)</li>
+            <li>Follower growth over time</li>
+            <li>Top posts by engagement</li>
+            <li>Posting cadence</li>
+          </ul>
+        </div>
+        <div class="card metric-card">
+          <h3>Ghost (Super Abundance)</h3>
+          <ul class="metric-list">
+            <li>Open rate per newsletter</li>
+            <li>Click-through rate</li>
+            <li>Subscriber growth</li>
+            <li>Top newsletters by engagement</li>
+            <li>Send cadence</li>
+          </ul>
+        </div>
+        <div class="card metric-card">
+          <h3>Substack</h3>
+          <ul class="metric-list">
+            <li>Subscriber count (if accessible)</li>
+            <li>Open rate (if accessible)</li>
+            <li>Post frequency</li>
+            <li>Growth trajectory</li>
+          </ul>
+        </div>
+        <div class="card metric-card">
+          <h3>Cross-Channel</h3>
+          <ul class="metric-list">
+            <li>Growth velocity comparison</li>
+            <li>Which channel is growing fastest</li>
+            <li>Engagement benchmarks per channel</li>
+            <li>Content cadence tracking</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECH STACK -->
+    <section>
+      <h2>Tech Stack &amp; Repos</h2>
+      <div class="stack-grid">
+        <div class="stack-item">
+          <div class="stack-label">Frontend</div>
+          <div class="stack-value">Next.js + Tailwind</div>
+        </div>
+        <div class="stack-item">
+          <div class="stack-label">Hosting</div>
+          <div class="stack-value">Vercel</div>
+        </div>
+        <div class="stack-item">
+          <div class="stack-label">Structured Data</div>
+          <div class="stack-value">Airtable SDK</div>
+        </div>
+        <div class="stack-item">
+          <div class="stack-label">Newsletter API</div>
+          <div class="stack-value">Ghost Content API</div>
+        </div>
+        <div class="stack-item">
+          <div class="stack-label">AI / LLM</div>
+          <div class="stack-value">Claude (Anthropic)</div>
+        </div>
+        <div class="stack-item">
+          <div class="stack-label">Unstructured Data</div>
+          <div class="stack-value">Vector DB (TBD)</div>
+        </div>
+      </div>
+      <div class="repo-grid">
+        <div class="repo-badge">tfc-dash <span class="repo-status">scaffold</span></div>
+        <div class="repo-badge">tfc-brain <span class="repo-status">scaffold</span></div>
+        <div class="repo-badge">tfc-news-agg <span class="repo-status">scaffold</span></div>
+        <div class="repo-badge">tfc-crm-helper <span class="repo-status">scaffold</span></div>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section>
+      <h2>Gate Timeline</h2>
+      <div class="timeline">
+        <div class="timeline-node">
+          <div class="timeline-date">May 29</div>
+          <div class="timeline-title">Gate 1</div>
+          <div class="timeline-desc">Scope locked, wireframes, stack confirmed, work split</div>
+          <div class="timeline-urgent">3 days away</div>
+        </div>
+        <div class="timeline-node">
+          <div class="timeline-date">June 26</div>
+          <div class="timeline-title">Gate 2</div>
+          <div class="timeline-desc">MVP &mdash; LinkedIn + Ghost data live, skeleton deployed</div>
+        </div>
+        <div class="timeline-node">
+          <div class="timeline-date">July 24</div>
+          <div class="timeline-title">Gate 3</div>
+          <div class="timeline-desc">3+ sources, AI prototype, article feed integrated</div>
+        </div>
+        <div class="timeline-node">
+          <div class="timeline-date">Aug 17</div>
+          <div class="timeline-title">Gate 4</div>
+          <div class="timeline-desc">Ship &mdash; daily-use ready, mobile-friendly, documented</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OWNERSHIP -->
+    <section>
+      <h2>Ownership &amp; Work Split</h2>
+      <div class="ownership-grid">
+        <div class="card owner-card">
+          <div class="owner-label primary">Danny Gardner &mdash; Primary</div>
+          <ul>
+            <li>Full dashboard build (both tabs)</li>
+            <li>All API integrations (Ghost, LinkedIn)</li>
+            <li>Airtable schema design</li>
+            <li>Architecture &amp; deployment</li>
+            <li>Core component library</li>
+          </ul>
+        </div>
+        <div class="card owner-card">
+          <div class="owner-label modular">Kush Behl &mdash; Modular Features</div>
+          <ul>
+            <li>New analytics widgets</li>
+            <li>AI-powered features</li>
+            <li>Trending algorithms</li>
+            <li>Custom visualizations</li>
+            <li>Feature experiments</li>
+          </ul>
+        </div>
+        <div class="plugin-note">
+          <strong>Plugin Architecture:</strong> Danny builds the dashboard with a modular widget interface. Kush builds self-contained feature modules that slot in without touching the core app. Each module follows a defined component contract.
+        </div>
+      </div>
+    </section>
+
+    <!-- RISKS -->
+    <section>
+      <h2>Risk Register</h2>
+      <div class="risk-grid">
+        <div class="card risk-card">
+          <div class="severity sev-critical">Critical</div>
+          <div class="risk-body">
+            <h4>Medium API is dead</h4>
+            <p>API archived March 2023. No viable programmatic path to analytics data.</p>
+            <p class="risk-fallback">Fallback: RSS feed for post titles only, or drop Medium from scope entirely.</p>
+          </div>
+        </div>
+        <div class="card risk-card">
+          <div class="severity sev-high">High</div>
+          <div class="risk-body">
+            <h4>Substack has no official API</h4>
+            <p>Unofficial Python libraries reverse-engineer endpoints. Could break at any time.</p>
+            <p class="risk-fallback">Fallback: RSS feed + manual data entry for key metrics.</p>
+          </div>
+        </div>
+        <div class="card risk-card">
+          <div class="severity sev-high">High</div>
+          <div class="risk-body">
+            <h4>LinkedIn API approval timeline</h4>
+            <p>Analytics API requires OAuth + case-by-case approval. Could take weeks.</p>
+            <p class="risk-fallback">Fallback: Parse manual XLS export from LinkedIn analytics dashboard.</p>
+          </div>
+        </div>
+        <div class="card risk-card">
+          <div class="severity sev-medium">Medium</div>
+          <div class="risk-body">
+            <h4>Brain has no single owner</h4>
+            <p>With Christos gone, Airtable schema and Vector DB architecture have no designated maintainer.</p>
+            <p class="risk-fallback">Mitigation: Lock schema contract at Gate 1. Assign clear ownership.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUESTIONS FOR MUJI -->
+    <section>
+      <div class="questions-section">
+        <h2>Questions for Muji</h2>
+        <ol class="question-list">
+          <li>
+            <div>
+              <div class="q-title">Brain ownership</div>
+              <div class="q-context">With Christos gone, should Danny + Kush co-own Brain? Or should another team member take it?</div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <div class="q-title">Medium &mdash; drop or keep?</div>
+              <div class="q-context">API is dead. Should we drop it entirely from scope, or invest time in RSS-only partial data?</div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <div class="q-title">LinkedIn API approval</div>
+              <div class="q-context">Start the approval process now, or plan the MVP around manual XLS export and add API later?</div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <div class="q-title">Vector DB recommendation</div>
+              <div class="q-context">Pinecone vs Supabase pgvector vs something else? What does Muji recommend for the AI features?</div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <div class="q-title">Airtable schema</div>
+              <div class="q-context">Should we design the schema ourselves, or is there an existing Trifecta pattern to follow?</div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <div class="q-title">Gate 1 wireframes</div>
+              <div class="q-context">Figma mockups, coded HTML prototypes, or is this plan doc sufficient for Thursday?</div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <div class="q-title">AI feature &mdash; Claude confirmed?</div>
+              <div class="q-context">Anthropic key is already in the .env template. Is Claude the confirmed LLM choice for talk-to-your-data?</div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <footer>
+      <p>Trifecta Enterprises MGMT LLC &middot; Philly AI Lab Summer 2026</p>
+      <p style="margin-top: 0.35rem;"><code>tfc-dash</code> &middot; Last updated May 26, 2026</p>
+    </footer>
+
+  </main>
+</body>
+</html>
