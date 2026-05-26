@@ -640,10 +640,10 @@
       </div>
     </section>
 
-    <!-- API FEASIBILITY -->
+    <!-- DATA COLLECTION STRATEGY -->
     <section>
-      <h2>API Feasibility Matrix</h2>
-      <p>Research into what data we can actually pull programmatically from each platform.</p>
+      <h2>Data Collection Strategy</h2>
+      <p>We researched every platform's API. Here's what's actually available and our proposed ingestion approach.</p>
       <div class="table-wrap" style="margin-top: 1rem;">
         <table>
           <thead>
@@ -652,7 +652,7 @@
               <th>API Status</th>
               <th>Auth</th>
               <th>What We Get</th>
-              <th>Fallback</th>
+              <th>Our Plan</th>
             </tr>
           </thead>
           <tbody>
@@ -661,31 +661,64 @@
               <td><span class="chip chip-green">Full API</span></td>
               <td>JWT (Admin Key)</td>
               <td>Views, clicks, members, posts, newsletters</td>
-              <td>&mdash;</td>
+              <td style="color: var(--green); font-weight: 600;">API direct</td>
             </tr>
             <tr>
               <td style="font-weight:600; color: var(--text);">LinkedIn</td>
               <td><span class="chip chip-amber">Gated</span></td>
               <td>OAuth 2.0 + approval</td>
               <td>Post analytics, impressions (if approved)</td>
-              <td>Manual XLS export</td>
+              <td>Playwright daily cron or XLS export</td>
             </tr>
             <tr>
               <td style="font-weight:600; color: var(--text);">Substack</td>
               <td><span class="chip chip-amber">No Official API</span></td>
-              <td>Unofficial libs</td>
-              <td>Posts via reverse-engineered endpoints (fragile)</td>
-              <td>RSS feed + manual</td>
+              <td>N/A</td>
+              <td>No official endpoints; unofficial libs fragile</td>
+              <td>Playwright daily cron or RSS</td>
             </tr>
             <tr>
               <td style="font-weight:600; color: var(--text);">Medium</td>
               <td><span class="chip chip-red">Deprecated</span></td>
               <td>N/A</td>
               <td>Nothing &mdash; API archived March 2023</td>
-              <td>RSS titles or drop</td>
+              <td>Playwright daily cron or drop</td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- PLAYWRIGHT MCP STRATEGY -->
+      <div class="card" style="margin-top: 1.5rem; border-left: 3px solid var(--accent);">
+        <h3 style="color: var(--accent); margin-bottom: 0.75rem;">Playwright MCP &mdash; Universal Fallback for Platforms Without APIs</h3>
+        <p style="margin-bottom: 0.75rem;">
+          For LinkedIn, Substack, and Medium &mdash; none of which offer usable analytics APIs &mdash; we propose a <strong>Playwright MCP server</strong> running as a daily cron job. It logs into each platform's analytics dashboard, scrapes the numbers, and writes structured data to Airtable. One request per platform per day.
+        </p>
+        <div class="grid-2" style="gap: 0.75rem; margin-bottom: 1rem;">
+          <div style="background: var(--green-bg); border: 1px solid rgba(34,197,94,0.15); border-radius: 10px; padding: 1rem;">
+            <h3 style="color: var(--green); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em;">Why this works at our scale</h3>
+            <ul style="list-style: none; padding: 0; margin-top: 0.5rem;">
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">1 request/platform/day &mdash; barely detectable</li>
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Near-zero cost (headless browser on a cron)</li>
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Universal &mdash; works for any platform with a web dashboard</li>
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">No API approval or rate limits to worry about</li>
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Real browser fingerprint, not a headless bot signature</li>
+            </ul>
+          </div>
+          <div style="background: var(--amber-bg); border: 1px solid rgba(245,158,11,0.15); border-radius: 10px; padding: 1rem;">
+            <h3 style="color: var(--amber); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em;">Risk: botting detection</h3>
+            <ul style="list-style: none; padding: 0; margin-top: 0.5rem;">
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Platforms can flag automated logins</li>
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">LinkedIn is most aggressive at bot detection</li>
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Account suspension is possible if detected</li>
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">At 1x/day frequency, risk is low but non-zero</li>
+              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Fallback: manual XLS/CSV export if flagged</li>
+            </ul>
+          </div>
+        </div>
+        <p style="font-size: 0.85rem; margin-bottom: 0;">
+          <strong>Recommendation:</strong> Ghost via API (best path). LinkedIn, Substack, Medium via Playwright MCP daily cron. If LinkedIn API approval comes through, we migrate off Playwright. The API is always better long-term &mdash; Playwright is our practical bridge to get data flowing from day one.
+        </p>
       </div>
     </section>
 
@@ -699,6 +732,12 @@
             <div class="arch-box source green">Ghost</div>
             <div class="arch-box source amber">Substack</div>
             <div class="arch-box source red">Medium</div>
+          </div>
+          <div style="display: flex; justify-content: center; gap: 2rem; padding: 0.35rem 0; font-size: 0.65rem; color: var(--text-muted);">
+            <span>Playwright</span>
+            <span style="color: var(--green);">API</span>
+            <span>Playwright</span>
+            <span>Playwright</span>
           </div>
           <div class="arch-connector">&#8595; &#8595; &#8595; &#8595;</div>
 
@@ -747,22 +786,10 @@
       </div>
     </section>
 
-    <!-- BRAIN ALERT -->
-    <section>
-      <div class="alert">
-        <h3>Brain Ownership Change</h3>
-        <p>
-          Christos Petridis was originally assigned as Brain project owner. He is no longer on the project.
-          The team is sharing Brain responsibility &mdash; but there is <strong>no single owner</strong> of the Airtable schema or Vector DB architecture.
-          This creates risk of schema drift and nobody maintaining the ingestion pipeline. <strong>We need Muji's guidance on ownership structure.</strong>
-        </p>
-      </div>
-    </section>
-
     <!-- METRICS STRATEGY -->
     <section>
       <h2>Metrics Strategy</h2>
-      <p>What to track per platform &mdash; and why it matters for Christie's personal brand.</p>
+      <p>What we'll track per platform and across channels.</p>
       <div class="metrics-grid" style="margin-top: 1rem;">
         <div class="card metric-card">
           <h3>LinkedIn</h3>
@@ -830,8 +857,8 @@
           <div class="stack-value">Claude (Anthropic)</div>
         </div>
         <div class="stack-item">
-          <div class="stack-label">Unstructured Data</div>
-          <div class="stack-value">Vector DB (TBD)</div>
+          <div class="stack-label">Scraping Fallback</div>
+          <div class="stack-value">Playwright MCP</div>
         </div>
       </div>
       <div class="repo-grid">
@@ -929,11 +956,11 @@
           </div>
         </div>
         <div class="card risk-card">
-          <div class="severity sev-medium">Medium</div>
+          <div class="severity sev-high">High</div>
           <div class="risk-body">
-            <h4>Brain has no single owner</h4>
-            <p>With Christos gone, Airtable schema and Vector DB architecture have no designated maintainer.</p>
-            <p class="risk-fallback">Mitigation: Lock schema contract at Gate 1. Assign clear ownership.</p>
+            <h4>Playwright botting detection</h4>
+            <p>LinkedIn is most aggressive at detecting automation. Substack and Medium less so.</p>
+            <p class="risk-fallback">Mitigation: 1 request/day/platform, real browser fingerprint, single account. Fallback: manual export.</p>
           </div>
         </div>
       </div>
@@ -946,20 +973,20 @@
         <ol class="question-list">
           <li>
             <div>
-              <div class="q-title">Brain ownership</div>
-              <div class="q-context">With Christos gone, should Danny + Kush co-own Brain? Or should another team member take it?</div>
+              <div class="q-title">Playwright MCP approach</div>
+              <div class="q-context">Are you comfortable with daily cron scraping for LinkedIn/Substack/Medium? Any concerns about account risk at this frequency?</div>
             </div>
           </li>
           <li>
             <div>
-              <div class="q-title">Medium &mdash; drop or keep?</div>
-              <div class="q-context">API is dead. Should we drop it entirely from scope, or invest time in RSS-only partial data?</div>
+              <div class="q-title">Medium &mdash; drop or scrape?</div>
+              <div class="q-context">API is dead, Playwright scrape is our only option. Is the data worth the effort, or should we cut it?</div>
             </div>
           </li>
           <li>
             <div>
               <div class="q-title">LinkedIn API approval</div>
-              <div class="q-context">Start the approval process now, or plan the MVP around manual XLS export and add API later?</div>
+              <div class="q-context">Should we start the approval process in parallel with Playwright, or just stick with scraping for now?</div>
             </div>
           </li>
           <li>
