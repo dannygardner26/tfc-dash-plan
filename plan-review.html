@@ -4,140 +4,216 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TFC Dashboard — Technical Plan Review</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,700;1,6..72,400&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0a0f;
-      --surface: #14141f;
-      --surface-hover: #1a1a2e;
-      --border: rgba(255,255,255,0.08);
-      --border-accent: rgba(99,102,241,0.3);
-      --accent: #6366f1;
-      --accent-glow: rgba(99,102,241,0.15);
-      --green: #22c55e;
-      --green-bg: rgba(34,197,94,0.1);
-      --amber: #f59e0b;
-      --amber-bg: rgba(245,158,11,0.1);
-      --red: #ef4444;
-      --red-bg: rgba(239,68,68,0.1);
-      --orange: #f97316;
-      --orange-bg: rgba(249,115,22,0.1);
-      --text: #f1f1f4;
-      --text-secondary: #8b8b9e;
-      --text-muted: #5a5a6e;
-      --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      --bg: #0e0e0c;
+      --bg-warm: #141311;
+      --surface: #1c1b18;
+      --surface-raised: #242320;
+      --border: rgba(232,226,217,0.08);
+      --border-bright: rgba(232,226,217,0.15);
+      --accent: #38bdf8;
+      --accent-dim: rgba(56,189,248,0.12);
+      --accent-glow: rgba(56,189,248,0.06);
+      --green: #4ade80;
+      --green-dim: rgba(74,222,128,0.1);
+      --amber: #fbbf24;
+      --amber-dim: rgba(251,191,36,0.1);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.1);
+      --text: #e8e2d9;
+      --text-dim: #9a9489;
+      --text-muted: #6b665e;
+      --serif: 'Newsreader', Georgia, serif;
+      --mono: 'JetBrains Mono', 'Cascadia Code', monospace;
+      --sans: 'Outfit', system-ui, sans-serif;
+      --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--sans);
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
+      position: relative;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: var(--grain);
+      background-size: 200px;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
     }
 
     main {
-      max-width: 880px;
+      max-width: 920px;
       margin: 0 auto;
-      padding: 3rem 2rem 4rem;
+      padding: 4rem 2.5rem 5rem;
     }
 
-    section { margin-bottom: 3.5rem; }
+    section {
+      margin-bottom: 4.5rem;
+      animation: fadeUp 0.6s ease-out both;
+    }
 
+    section:nth-child(2) { animation-delay: 0.05s; }
+    section:nth-child(3) { animation-delay: 0.1s; }
+    section:nth-child(4) { animation-delay: 0.15s; }
+    section:nth-child(5) { animation-delay: 0.2s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========== TYPOGRAPHY ========== */
     h1 {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      background: linear-gradient(135deg, #f1f1f4 0%, #6366f1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--text);
     }
 
     h2 {
-      font-size: 1.35rem;
+      font-family: var(--serif);
+      font-size: 1.6rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.25rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
       color: var(--text);
+      position: relative;
+      padding-left: 1.25rem;
+    }
+
+    h2::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.25em;
+      width: 4px;
+      height: 0.85em;
+      background: var(--accent);
+      border-radius: 2px;
     }
 
     h3 {
-      font-size: 1rem;
+      font-family: var(--sans);
+      font-size: 0.95rem;
       font-weight: 600;
       margin-bottom: 0.75rem;
       color: var(--text);
+      letter-spacing: 0.01em;
     }
 
-    p { color: var(--text-secondary); margin-bottom: 0.75rem; }
+    p {
+      color: var(--text-dim);
+      margin-bottom: 0.85rem;
+      font-size: 0.95rem;
+    }
 
+    /* ========== COMPONENTS ========== */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 10px;
       padding: 1.5rem;
+      transition: border-color 0.2s;
     }
 
-    .card-glow {
-      border-color: var(--border-accent);
-      box-shadow: 0 0 40px var(--accent-glow);
-    }
+    .card:hover { border-color: var(--border-bright); }
 
-    .chip {
+    .tag {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      padding: 0.2rem 0.65rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
+      gap: 0.3rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
     }
-    .chip-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
-    .chip-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
-    .chip-red { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
-    .chip-orange { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(249,115,22,0.2); }
-    .chip-accent { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(99,102,241,0.2); }
+    .tag-green { background: var(--green-dim); color: var(--green); }
+    .tag-amber { background: var(--amber-dim); color: var(--amber); }
+    .tag-red { background: var(--red-dim); color: var(--red); }
+    .tag-accent { background: var(--accent-dim); color: var(--accent); }
 
     code {
       font-family: var(--mono);
-      font-size: 0.85em;
-      background: rgba(99,102,241,0.1);
+      font-size: 0.8em;
+      background: var(--accent-dim);
       color: var(--accent);
-      padding: 0.15em 0.4em;
-      border-radius: 4px;
+      padding: 0.15em 0.45em;
+      border-radius: 3px;
     }
 
-    hr {
+    .divider {
       border: none;
       height: 1px;
-      background: var(--border);
-      margin: 2rem 0;
+      background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+      margin: 2.5rem 0;
+    }
+
+    .label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
     }
 
     /* ========== HERO ========== */
-    .hero { text-align: center; padding: 2rem 0 1rem; }
+    .hero { text-align: left; padding: 1rem 0 0; }
+    .hero .overline {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: block;
+    }
     .hero .subtitle {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      margin-top: 0.75rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--text-dim);
+      margin-top: 1rem;
+      line-height: 1.5;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .hero-meta-item .label { margin-bottom: 0; }
+    .hero-meta-item .value {
+      font-size: 0.9rem;
+      color: var(--text);
       font-weight: 500;
     }
-    .hero .meta {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      margin-top: 1.25rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-    .hero .meta span { display: inline-flex; align-items: center; gap: 0.4rem; }
 
     /* ========== GRID ========== */
     .grid-2 {
@@ -146,231 +222,179 @@
       gap: 1rem;
     }
 
-    /* ========== TAB CARDS ========== */
-    .tab-card { position: relative; overflow: hidden; }
-    .tab-card .tab-label {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 0.35rem 1rem;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+    /* ========== FEATURE CARDS ========== */
+    .feat-card {
+      position: relative;
+      overflow: hidden;
+      border-top: 2px solid var(--border);
+      padding-top: 1.25rem;
     }
-    .tab-card .tab-label.perf { background: linear-gradient(90deg, rgba(99,102,241,0.2), transparent); color: var(--accent); }
-    .tab-card .tab-label.ideas { background: linear-gradient(90deg, rgba(34,197,94,0.2), transparent); color: var(--green); }
-    .tab-card .content { padding-top: 1.5rem; }
-    .tab-card ul { list-style: none; padding: 0; }
-    .tab-card li {
-      padding: 0.4rem 0;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      padding-left: 1.2rem;
+    .feat-card.perf { border-top-color: var(--accent); }
+    .feat-card.ideas { border-top-color: var(--green); }
+    .feat-card ul { list-style: none; padding: 0; }
+    .feat-card li {
+      padding: 0.35rem 0;
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      padding-left: 1rem;
       position: relative;
     }
-    .tab-card li::before {
-      content: '';
+    .feat-card li::before {
+      content: '—';
       position: absolute;
       left: 0;
-      top: 0.75rem;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--text-muted);
+      color: var(--text-muted);
+      font-size: 0.75rem;
     }
 
     /* ========== TABLE ========== */
-    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
-    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-    thead { background: var(--surface); }
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg-warm); }
     th {
       text-align: left;
-      padding: 0.85rem 1rem;
+      padding: 0.75rem 1rem;
+      font-family: var(--mono);
       font-weight: 600;
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.1em;
       color: var(--text-muted);
       border-bottom: 1px solid var(--border);
     }
     td {
-      padding: 0.85rem 1rem;
+      padding: 0.8rem 1rem;
       border-bottom: 1px solid var(--border);
-      color: var(--text-secondary);
+      color: var(--text-dim);
       vertical-align: top;
     }
     tr:last-child td { border-bottom: none; }
-    tbody tr { background: var(--bg); }
-    tbody tr:hover { background: var(--surface); }
+    tbody tr:hover { background: var(--surface-raised); }
 
     /* ========== ARCHITECTURE ========== */
     .arch { text-align: center; }
     .arch-row {
       display: flex;
       justify-content: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       flex-wrap: wrap;
     }
     .arch-box {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.65rem 1.1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      position: relative;
+      border-radius: 6px;
+      padding: 0.55rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 500;
     }
-    .arch-box.source { min-width: 100px; text-align: center; }
-    .arch-box.source.green { border-color: rgba(34,197,94,0.3); color: var(--green); }
-    .arch-box.source.amber { border-color: rgba(245,158,11,0.3); color: var(--amber); }
-    .arch-box.source.red { border-color: rgba(239,68,68,0.3); color: var(--red); }
+    .arch-box.src { min-width: 90px; text-align: center; }
+    .arch-box.src-ok { border-color: rgba(74,222,128,0.25); color: var(--green); }
+    .arch-box.src-mid { border-color: rgba(251,191,36,0.25); color: var(--amber); }
+    .arch-box.src-bad { border-color: rgba(248,113,113,0.25); color: var(--red); }
 
-    .arch-connector {
+    .arch-flow {
       display: flex;
       justify-content: center;
-      padding: 0.5rem 0;
+      padding: 0.4rem 0;
       color: var(--text-muted);
-      font-size: 1.2rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
     }
 
+    .arch-brain-wrap { display: inline-block; margin: 0.25rem 0; }
+    .arch-brain-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
     .arch-brain {
       background: var(--surface);
-      border: 1px solid var(--border-accent);
-      box-shadow: 0 0 30px var(--accent-glow);
-      border-radius: 14px;
-      padding: 1.25rem 2rem;
+      border: 1px solid rgba(56,189,248,0.2);
+      box-shadow: 0 0 40px var(--accent-glow), inset 0 1px 0 rgba(56,189,248,0.05);
+      border-radius: 10px;
+      padding: 1rem 2.5rem;
       display: inline-flex;
       gap: 2rem;
       align-items: center;
     }
-    .arch-brain .half {
-      text-align: center;
-    }
-    .arch-brain .half-label {
-      font-size: 0.7rem;
+    .arch-half { text-align: center; }
+    .arch-half-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.1em;
       color: var(--text-muted);
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
     }
-    .arch-brain .half-value {
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-    .arch-brain .divider {
-      width: 1px;
-      height: 2rem;
-      background: var(--border);
-    }
-    .arch-brain-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
+    .arch-half-value { font-family: var(--sans); font-size: 0.9rem; font-weight: 600; }
+    .arch-divider { width: 1px; height: 1.75rem; background: var(--border-bright); }
 
-    .arch-dash {
+    .arch-dash-box {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      padding: 0.7rem 2rem;
       display: inline-block;
     }
-    .arch-repo {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 0.35rem;
-    }
 
-    /* ========== ALERT CARD ========== */
-    .alert {
-      border-left: 3px solid var(--amber);
-      background: var(--amber-bg);
-      border-radius: 0 10px 10px 0;
-      padding: 1.25rem 1.5rem;
-    }
-    .alert h3 { color: var(--amber); margin-bottom: 0.5rem; }
-    .alert p { color: var(--text-secondary); margin-bottom: 0; font-size: 0.9rem; }
-
-    /* ========== TIMELINE ========== */
-    .timeline {
-      display: flex;
-      position: relative;
-      padding: 1rem 0;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      top: 2.15rem;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--amber), var(--accent), var(--accent), var(--green));
-      border-radius: 1px;
-    }
-    .timeline-node {
-      flex: 1;
-      position: relative;
-      text-align: center;
-      padding-top: 2.5rem;
-    }
-    .timeline-node::before {
-      content: '';
-      position: absolute;
-      top: 1.25rem;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
+    /* ========== PLAYWRIGHT STRATEGY ========== */
+    .strategy-card {
       background: var(--surface);
-      border: 3px solid var(--accent);
-      z-index: 1;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin-top: 1.5rem;
+      border-left: 3px solid var(--accent);
     }
-    .timeline-node:first-child::before {
-      border-color: var(--amber);
-      background: var(--amber);
-      animation: pulse 2s ease-in-out infinite;
+    .strategy-card h3 {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
     }
-    .timeline-node:last-child::before { border-color: var(--green); }
-    .timeline-date {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+    .pro-con-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0;
     }
-    .timeline-node:first-child .timeline-date { color: var(--amber); }
-    .timeline-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin: 0.35rem 0 0.25rem;
+    .pro-box, .con-box {
+      border-radius: 8px;
+      padding: 1rem;
     }
-    .timeline-desc {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      line-height: 1.4;
+    .pro-box {
+      background: var(--green-dim);
+      border: 1px solid rgba(74,222,128,0.12);
     }
-    .timeline-urgent {
-      display: inline-block;
-      background: var(--amber-bg);
-      color: var(--amber);
+    .con-box {
+      background: var(--amber-dim);
+      border: 1px solid rgba(251,191,36,0.12);
+    }
+    .pro-box h4, .con-box h4 {
+      font-family: var(--mono);
       font-size: 0.65rem;
-      font-weight: 700;
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      margin-top: 0.35rem;
-      border: 1px solid rgba(245,158,11,0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.6rem;
     }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(245,158,11,0); }
+    .pro-box h4 { color: var(--green); }
+    .con-box h4 { color: var(--amber); }
+    .pro-box li, .con-box li {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      padding: 0.2rem 0;
+      list-style: none;
     }
 
     /* ========== METRICS ========== */
@@ -379,262 +403,408 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
     }
-    .metric-card { padding: 1.25rem; }
-    .metric-card h3 { font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .metric-card {
+      padding: 1.25rem;
+      border-top: 2px solid var(--border);
+    }
+    .metric-card:nth-child(1) { border-top-color: #0a66c2; }
+    .metric-card:nth-child(2) { border-top-color: #15171a; border-top-color: var(--text-dim); }
+    .metric-card:nth-child(3) { border-top-color: #ff6719; }
+    .metric-card:nth-child(4) { border-top-color: var(--accent); }
+    .metric-card h3 {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
     .metric-list { list-style: none; padding: 0; }
     .metric-list li {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      padding: 0.3rem 0;
-      padding-left: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      padding: 0.25rem 0;
+      padding-left: 0.85rem;
       position: relative;
     }
     .metric-list li::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 0.65rem;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
+      top: 0.6rem;
+      width: 4px;
+      height: 4px;
+      border-radius: 1px;
+      background: var(--text-muted);
     }
-
-    /* ========== OWNERSHIP ========== */
-    .ownership-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .owner-card { position: relative; overflow: hidden; }
-    .owner-card .owner-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 0.75rem;
-    }
-    .owner-card .primary { color: var(--accent); }
-    .owner-card .modular { color: var(--green); }
-    .owner-card ul { list-style: none; padding: 0; }
-    .owner-card li {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      padding: 0.35rem 0;
-    }
-    .plugin-note {
-      grid-column: 1 / -1;
-      border-left: 3px solid var(--green);
-      background: var(--green-bg);
-      border-radius: 0 10px 10px 0;
-      padding: 1rem 1.25rem;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
-
-    /* ========== RISKS ========== */
-    .risk-grid { display: grid; gap: 0.75rem; }
-    .risk-card {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      padding: 1rem 1.25rem;
-    }
-    .risk-card .severity {
-      flex-shrink: 0;
-      width: 3.5rem;
-      text-align: center;
-      font-size: 0.65rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 0.25rem 0;
-      border-radius: 6px;
-      margin-top: 0.15rem;
-    }
-    .sev-critical { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
-    .sev-high { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
-    .sev-medium { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(249,115,22,0.2); }
-    .risk-card .risk-body h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
-    .risk-card .risk-body p { font-size: 0.82rem; margin-bottom: 0; }
-    .risk-fallback { color: var(--text-muted); font-style: italic; }
-
-    /* ========== QUESTIONS ========== */
-    .questions-section {
-      background: var(--surface);
-      border: 2px solid var(--border-accent);
-      border-radius: 14px;
-      padding: 2rem;
-      box-shadow: 0 0 60px var(--accent-glow);
-    }
-    .questions-section h2 {
-      color: var(--accent);
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .question-list { list-style: none; padding: 0; counter-reset: q; }
-    .question-list li {
-      counter-increment: q;
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-    }
-    .question-list li:last-child { border-bottom: none; padding-bottom: 0; }
-    .question-list li::before {
-      content: counter(q);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: var(--accent-glow);
-      color: var(--accent);
-      font-size: 0.8rem;
-      font-weight: 700;
-      border: 1px solid rgba(99,102,241,0.2);
-    }
-    .question-list .q-title { font-weight: 600; font-size: 0.95rem; color: var(--text); }
-    .question-list .q-context { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem; }
 
     /* ========== STACK ========== */
     .stack-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
+      gap: 0.65rem;
     }
     .stack-item {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem;
+      border-radius: 8px;
+      padding: 0.85rem;
       text-align: center;
+      transition: border-color 0.2s;
     }
-    .stack-item .stack-label {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      margin-bottom: 0.35rem;
-    }
+    .stack-item:hover { border-color: var(--border-bright); }
     .stack-item .stack-value {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
     }
-    .repo-grid {
+    .repo-row {
       display: flex;
-      gap: 0.75rem;
-      margin-top: 1rem;
+      gap: 0.6rem;
+      margin-top: 0.85rem;
       flex-wrap: wrap;
     }
-    .repo-badge {
+    .repo-chip {
       font-family: var(--mono);
-      font-size: 0.78rem;
-      padding: 0.4rem 0.85rem;
+      font-size: 0.72rem;
+      padding: 0.3rem 0.7rem;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text-secondary);
+      border-radius: 4px;
+      color: var(--text-dim);
     }
-    .repo-badge .repo-status {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.65rem;
+
+    /* ========== TIMELINE ========== */
+    .tl {
+      display: flex;
+      position: relative;
+      padding: 1rem 0;
+    }
+    .tl::before {
+      content: '';
+      position: absolute;
+      top: 2.1rem;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--amber), var(--accent), var(--accent), var(--green));
+    }
+    .tl-node {
+      flex: 1;
+      position: relative;
+      text-align: center;
+      padding-top: 2.5rem;
+    }
+    .tl-node::before {
+      content: '';
+      position: absolute;
+      top: 1.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--accent);
+      z-index: 1;
+    }
+    .tl-node:first-child::before {
+      border-color: var(--amber);
+      background: var(--amber);
+      animation: glow 2.5s ease-in-out infinite;
+    }
+    .tl-node:last-child::before { border-color: var(--green); }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,0.35); }
+      50% { box-shadow: 0 0 0 8px rgba(251,191,36,0); }
+    }
+    .tl-date {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 600;
       color: var(--text-muted);
-      margin-left: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
+    .tl-node:first-child .tl-date { color: var(--amber); }
+    .tl-title { font-size: 0.88rem; font-weight: 600; margin: 0.3rem 0 0.2rem; }
+    .tl-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+    .tl-badge {
+      display: inline-block;
+      background: var(--amber-dim);
+      color: var(--amber);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      margin-top: 0.3rem;
+    }
+
+    /* ========== OWNERSHIP ========== */
+    .own-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .own-card { border-top: 2px solid var(--border); padding-top: 1.25rem; }
+    .own-card.primary { border-top-color: var(--accent); }
+    .own-card.modular { border-top-color: var(--green); }
+    .own-card ul { list-style: none; padding: 0; }
+    .own-card li { font-size: 0.85rem; color: var(--text-dim); padding: 0.3rem 0; }
+    .own-note {
+      grid-column: 1 / -1;
+      background: var(--green-dim);
+      border: 1px solid rgba(74,222,128,0.1);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    /* ========== RISKS ========== */
+    .risk-grid { display: grid; gap: 0.65rem; }
+    .risk-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+    }
+    .risk-sev {
+      flex-shrink: 0;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      margin-top: 0.1rem;
+    }
+    .sev-crit { background: var(--red-dim); color: var(--red); }
+    .sev-high { background: var(--amber-dim); color: var(--amber); }
+    .sev-med { background: rgba(56,189,248,0.1); color: var(--accent); }
+    .risk-body h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .risk-body p { font-size: 0.8rem; margin-bottom: 0; }
+    .risk-fallback { color: var(--text-muted); font-style: italic; }
+
+    /* ========== MOCKUP GALLERY ========== */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .gallery-grid .wide { grid-column: span 2; }
+    .mockup-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .mockup-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .mockup-frame {
+      width: 100%;
+      height: 220px;
+      border: none;
+      pointer-events: none;
+      transform: scale(0.5);
+      transform-origin: 0 0;
+      width: 200%;
+      height: 440px;
+    }
+    .mockup-frame-wrap {
+      overflow: hidden;
+      height: 220px;
+      background: #111;
+    }
+    .mockup-info {
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+    .mockup-name {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .mockup-style {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* fullscreen overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      cursor: pointer;
+    }
+    .overlay.active { display: flex; }
+    .overlay iframe {
+      width: 90vw;
+      height: 85vh;
+      border: 1px solid var(--border-bright);
+      border-radius: 12px;
+      background: #000;
+    }
+    .overlay-close {
+      position: fixed;
+      top: 1.5rem;
+      right: 2rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 10001;
+      display: none;
+    }
+    .overlay.active + .overlay-close { display: block; }
+
+    /* ========== QUESTIONS ========== */
+    .questions-wrap {
+      background: var(--surface);
+      border: 1px solid rgba(56,189,248,0.15);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 0 80px var(--accent-glow);
+    }
+    .questions-wrap h2 {
+      text-align: center;
+      color: var(--accent);
+      padding-left: 0;
+    }
+    .questions-wrap h2::before { display: none; }
+    .q-list { list-style: none; padding: 0; counter-reset: q; }
+    .q-list li {
+      counter-increment: q;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .q-list li:last-child { border-bottom: none; padding-bottom: 0; }
+    .q-list li::before {
+      content: counter(q);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .q-title { font-weight: 600; font-size: 0.92rem; }
+    .q-ctx { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
 
     /* ========== FOOTER ========== */
     footer {
       text-align: center;
-      padding: 2rem 0 1rem;
+      padding: 2.5rem 0 1rem;
       border-top: 1px solid var(--border);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
+      font-family: var(--mono);
     }
 
     /* ========== RESPONSIVE ========== */
-    @media (max-width: 640px) {
-      main { padding: 2rem 1rem 3rem; }
-      .grid-2, .metrics-grid, .ownership-grid, .stack-grid { grid-template-columns: 1fr; }
-      .timeline { flex-direction: column; gap: 1.5rem; padding-left: 2rem; }
-      .timeline::before {
-        top: 0; bottom: 0; left: 0.55rem;
-        width: 2px; height: auto; right: auto;
+    @media (max-width: 700px) {
+      main { padding: 2.5rem 1.25rem 3rem; }
+      .grid-2, .metrics-grid, .own-grid, .stack-grid, .pro-con-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-grid .wide { grid-column: span 1; }
+      .tl { flex-direction: column; gap: 1.5rem; padding-left: 1.75rem; }
+      .tl::before {
+        top: 0; bottom: 0; left: 0.5rem;
+        width: 1px; height: auto; right: auto;
       }
-      .timeline-node { text-align: left; padding-top: 0; padding-left: 1.5rem; }
-      .timeline-node::before { left: -1.45rem; top: 0.2rem; }
-      .arch-brain { flex-direction: column; gap: 0.75rem; padding: 1rem; }
-      .arch-brain .divider { width: 100%; height: 1px; }
-      .arch-row { gap: 0.5rem; }
-      .arch-box { font-size: 0.75rem; padding: 0.5rem 0.75rem; }
-      .questions-section { padding: 1.25rem; }
+      .tl-node { text-align: left; padding-top: 0; padding-left: 1.25rem; }
+      .tl-node::before { left: -1.25rem; top: 0.15rem; width: 12px; height: 12px; }
+      .arch-brain { flex-direction: column; gap: 0.5rem; padding: 0.75rem 1.25rem; }
+      .arch-divider { width: 100%; height: 1px; }
+      h2 { font-size: 1.35rem; }
+      .questions-wrap { padding: 1.25rem; }
     }
   </style>
 </head>
 <body>
+
   <main>
 
     <!-- HERO -->
     <section class="hero">
-      <h1>Personal Brand Dashboard</h1>
-      <p class="subtitle">Technical Plan Review</p>
-      <div class="meta">
-        <span>Danny Gardner &amp; Kushagra Behl</span>
-        <span>Philly AI Lab 2026</span>
-        <span>May 26, 2026</span>
-      </div>
-      <div class="meta" style="margin-top:0.5rem;">
-        <span><span class="chip chip-accent">For Muji Akbar</span></span>
-        <span><span class="chip chip-accent">Trifecta Enterprises</span></span>
+      <span class="overline">Philly AI Lab &middot; Gate 1 Review</span>
+      <h1>Personal Brand<br>Dashboard</h1>
+      <p class="subtitle">
+        A daily-driver analytics dashboard and content ideas engine for Christie Mealo &mdash;
+        one screen, every morning, across every channel.
+      </p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="label">Presented by</span>
+          <span class="value">Danny Gardner &amp; Kush Behl</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="label">For</span>
+          <span class="value">Muji Akbar</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="label">Date</span>
+          <span class="value">May 26, 2026</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="label">Org</span>
+          <span class="value">Trifecta Enterprises</span>
+        </div>
       </div>
     </section>
 
-    <hr>
-
-    <!-- EXECUTIVE SUMMARY -->
-    <section>
-      <div class="card card-glow">
-        <p style="color: var(--text); font-size: 1rem; line-height: 1.7; margin-bottom: 0;">
-          A <strong>two-tab web dashboard</strong> for Christie Mealo to track her content performance across LinkedIn, Ghost, Substack, and Medium &mdash; and discover content ideas powered by AI. Built with <strong>Next.js + Tailwind + Vercel</strong>, reading structured analytics from <strong>Airtable</strong> and unstructured content from a <strong>Vector DB</strong>. The goal: one screen Christie opens every morning.
-        </p>
-      </div>
-    </section>
+    <hr class="divider">
 
     <!-- TWO TABS -->
     <section>
-      <h2>The Two Tabs</h2>
+      <h2>Two Tabs</h2>
       <div class="grid-2">
-        <div class="card tab-card">
-          <div class="tab-label perf">Performance</div>
-          <div class="content">
-            <h3>Cross-Platform Analytics</h3>
-            <ul>
-              <li>LinkedIn growth, engagement, top posts</li>
-              <li>Ghost newsletter: opens, clicks, subscribers</li>
-              <li>Substack + Medium metrics (where accessible)</li>
-              <li>Cross-channel comparison &amp; trends</li>
-            </ul>
-            <div style="margin-top: 0.75rem;">
-              <span class="chip chip-accent">Data: Airtable</span>
-            </div>
+        <div class="card feat-card perf">
+          <h3>Performance</h3>
+          <ul>
+            <li>LinkedIn growth, engagement, top posts</li>
+            <li>Ghost newsletter: opens, clicks, subscribers</li>
+            <li>Substack + Medium metrics (where accessible)</li>
+            <li>Cross-channel comparison &amp; trends</li>
+          </ul>
+          <div style="margin-top: 0.85rem;">
+            <span class="tag tag-accent">reads: airtable</span>
           </div>
         </div>
-        <div class="card tab-card">
-          <div class="tab-label ideas">Ideas</div>
-          <div class="content">
-            <h3>Content Discovery + AI</h3>
-            <ul>
-              <li>Curated article feed from News Aggregator</li>
-              <li>Editorial captions per article</li>
-              <li>Trending topics across surfaced content</li>
-              <li>AI &ldquo;talk to your data&rdquo; (stretch goal)</li>
-            </ul>
-            <div style="margin-top: 0.75rem;">
-              <span class="chip chip-green">Data: Vector DB</span>
-            </div>
+        <div class="card feat-card ideas">
+          <h3>Ideas</h3>
+          <ul>
+            <li>Curated article feed from News Aggregator</li>
+            <li>Editorial captions per article</li>
+            <li>Trending topics across surfaced content</li>
+            <li>AI &ldquo;talk to your data&rdquo; (stretch)</li>
+          </ul>
+          <div style="margin-top: 0.85rem;">
+            <span class="tag tag-green">reads: vector db</span>
           </div>
         </div>
       </div>
@@ -658,66 +828,69 @@
           <tbody>
             <tr>
               <td style="font-weight:600; color: var(--text);">Ghost</td>
-              <td><span class="chip chip-green">Full API</span></td>
+              <td><span class="tag tag-green">Full API</span></td>
               <td>JWT (Admin Key)</td>
               <td>Views, clicks, members, posts, newsletters</td>
               <td style="color: var(--green); font-weight: 600;">API direct</td>
             </tr>
             <tr>
               <td style="font-weight:600; color: var(--text);">LinkedIn</td>
-              <td><span class="chip chip-amber">Gated</span></td>
+              <td><span class="tag tag-amber">Gated</span></td>
               <td>OAuth 2.0 + approval</td>
               <td>Post analytics, impressions (if approved)</td>
-              <td>Playwright daily cron or XLS export</td>
+              <td>Playwright daily cron</td>
             </tr>
             <tr>
               <td style="font-weight:600; color: var(--text);">Substack</td>
-              <td><span class="chip chip-amber">No Official API</span></td>
+              <td><span class="tag tag-amber">No API</span></td>
               <td>N/A</td>
-              <td>No official endpoints; unofficial libs fragile</td>
-              <td>Playwright daily cron or RSS</td>
+              <td>No official endpoints</td>
+              <td>Playwright daily cron</td>
             </tr>
             <tr>
               <td style="font-weight:600; color: var(--text);">Medium</td>
-              <td><span class="chip chip-red">Deprecated</span></td>
+              <td><span class="tag tag-red">Dead</span></td>
               <td>N/A</td>
-              <td>Nothing &mdash; API archived March 2023</td>
+              <td>API archived Mar 2023</td>
               <td>Playwright daily cron or drop</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- PLAYWRIGHT MCP STRATEGY -->
-      <div class="card" style="margin-top: 1.5rem; border-left: 3px solid var(--accent);">
-        <h3 style="color: var(--accent); margin-bottom: 0.75rem;">Playwright MCP &mdash; Universal Fallback for Platforms Without APIs</h3>
-        <p style="margin-bottom: 0.75rem;">
-          For LinkedIn, Substack, and Medium &mdash; none of which offer usable analytics APIs &mdash; we propose a <strong>Playwright MCP server</strong> running as a daily cron job. It logs into each platform's analytics dashboard, scrapes the numbers, and writes structured data to Airtable. One request per platform per day.
+      <div class="strategy-card">
+        <h3>Playwright MCP &mdash; Universal Fallback</h3>
+        <p>
+          For platforms without APIs, we run a <strong>Playwright MCP server</strong> on a daily cron.
+          It logs into each analytics dashboard, scrapes the numbers, writes structured data to Airtable.
+          One request per platform per day.
         </p>
-        <div class="grid-2" style="gap: 0.75rem; margin-bottom: 1rem;">
-          <div style="background: var(--green-bg); border: 1px solid rgba(34,197,94,0.15); border-radius: 10px; padding: 1rem;">
-            <h3 style="color: var(--green); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em;">Why this works at our scale</h3>
-            <ul style="list-style: none; padding: 0; margin-top: 0.5rem;">
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">1 request/platform/day &mdash; barely detectable</li>
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Near-zero cost (headless browser on a cron)</li>
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Universal &mdash; works for any platform with a web dashboard</li>
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">No API approval or rate limits to worry about</li>
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Real browser fingerprint, not a headless bot signature</li>
+        <div class="pro-con-grid">
+          <div class="pro-box">
+            <h4>Why this works at our scale</h4>
+            <ul>
+              <li>1 req/platform/day &mdash; barely detectable</li>
+              <li>Near-zero cost (headless browser on cron)</li>
+              <li>Universal &mdash; any platform with a web dashboard</li>
+              <li>No API approval or rate limits</li>
+              <li>Real browser fingerprint</li>
             </ul>
           </div>
-          <div style="background: var(--amber-bg); border: 1px solid rgba(245,158,11,0.15); border-radius: 10px; padding: 1rem;">
-            <h3 style="color: var(--amber); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em;">Risk: botting detection</h3>
-            <ul style="list-style: none; padding: 0; margin-top: 0.5rem;">
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Platforms can flag automated logins</li>
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">LinkedIn is most aggressive at bot detection</li>
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Account suspension is possible if detected</li>
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">At 1x/day frequency, risk is low but non-zero</li>
-              <li style="font-size: 0.85rem; color: var(--text-secondary); padding: 0.25rem 0;">Fallback: manual XLS/CSV export if flagged</li>
+          <div class="con-box">
+            <h4>Risk: botting detection</h4>
+            <ul>
+              <li>Platforms can flag automated logins</li>
+              <li>LinkedIn most aggressive at detection</li>
+              <li>Account suspension possible if caught</li>
+              <li>1x/day is low risk but non-zero</li>
+              <li>Fallback: manual XLS/CSV export</li>
             </ul>
           </div>
         </div>
-        <p style="font-size: 0.85rem; margin-bottom: 0;">
-          <strong>Recommendation:</strong> Ghost via API (best path). LinkedIn, Substack, Medium via Playwright MCP daily cron. If LinkedIn API approval comes through, we migrate off Playwright. The API is always better long-term &mdash; Playwright is our practical bridge to get data flowing from day one.
+        <p style="font-size: 0.85rem; margin-bottom: 0; color: var(--text-dim);">
+          <strong style="color: var(--text);">Recommendation:</strong> Ghost via API. LinkedIn, Substack, Medium via Playwright MCP daily cron.
+          If LinkedIn API approval comes through, migrate off Playwright. API is always better long-term &mdash;
+          Playwright is our bridge to get data flowing from day one.
         </p>
       </div>
     </section>
@@ -728,65 +901,112 @@
       <div class="card" style="padding: 2rem;">
         <div class="arch">
           <div class="arch-row">
-            <div class="arch-box source amber">LinkedIn</div>
-            <div class="arch-box source green">Ghost</div>
-            <div class="arch-box source amber">Substack</div>
-            <div class="arch-box source red">Medium</div>
+            <div class="arch-box src src-mid">LinkedIn</div>
+            <div class="arch-box src src-ok">Ghost</div>
+            <div class="arch-box src src-mid">Substack</div>
+            <div class="arch-box src src-bad">Medium</div>
           </div>
-          <div style="display: flex; justify-content: center; gap: 2rem; padding: 0.35rem 0; font-size: 0.65rem; color: var(--text-muted);">
-            <span>Playwright</span>
-            <span style="color: var(--green);">API</span>
-            <span>Playwright</span>
-            <span>Playwright</span>
+          <div style="display: flex; justify-content: center; gap: 1.75rem; padding: 0.3rem 0;">
+            <span class="label">playwright</span>
+            <span class="label" style="color: var(--green);">api</span>
+            <span class="label">playwright</span>
+            <span class="label">playwright</span>
           </div>
-          <div class="arch-connector">&#8595; &#8595; &#8595; &#8595;</div>
+          <div class="arch-flow">&darr;&ensp;&darr;&ensp;&darr;&ensp;&darr;</div>
 
-          <div style="margin-bottom: 0.25rem;">
-            <div class="arch-brain-title">The Brain</div>
-          </div>
-          <div class="arch-brain">
-            <div class="half">
-              <div class="half-label">Left Brain</div>
-              <div class="half-value">Airtable</div>
-              <div class="arch-repo">structured data</div>
+          <div class="arch-brain-wrap">
+            <div class="arch-brain-label">The Brain</div>
+            <div class="arch-brain">
+              <div class="arch-half">
+                <div class="arch-half-label">Left</div>
+                <div class="arch-half-value">Airtable</div>
+              </div>
+              <div class="arch-divider"></div>
+              <div class="arch-half">
+                <div class="arch-half-label">Right</div>
+                <div class="arch-half-value">Vector DB</div>
+              </div>
             </div>
-            <div class="divider"></div>
-            <div class="half">
-              <div class="half-label">Right Brain</div>
-              <div class="half-value">Vector DB</div>
-              <div class="arch-repo">unstructured content</div>
-            </div>
-          </div>
-          <div class="arch-repo" style="margin-top: 0.35rem;"><code>tfc-brain</code></div>
-
-          <div class="arch-connector">&#8595;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&#8595;</div>
-
-          <div class="arch-row" style="margin-bottom: 0.25rem;">
-            <div class="arch-box" style="border-color: rgba(99,102,241,0.3); min-width: 140px;">
-              Performance Tab
-            </div>
-            <div class="arch-box" style="border-color: rgba(34,197,94,0.3); min-width: 140px;">
-              Ideas Tab
-            </div>
+            <div style="margin-top: 0.3rem;"><code>tfc-brain</code></div>
           </div>
 
-          <div class="arch-connector">&#8595;</div>
+          <div class="arch-flow">&darr;&emsp;&emsp;&emsp;&darr;</div>
 
-          <div class="arch-dash">
-            <div style="font-weight: 700; font-size: 1rem;">TFC Dashboard</div>
-            <div style="font-size: 0.85rem; color: var(--text-secondary);">Next.js + Tailwind + Vercel</div>
+          <div class="arch-row" style="margin-bottom: 0.35rem;">
+            <div class="arch-box" style="border-color: rgba(56,189,248,0.2);">Performance</div>
+            <div class="arch-box" style="border-color: rgba(74,222,128,0.2);">Ideas</div>
           </div>
-          <div class="arch-repo"><code>tfc-dash</code></div>
 
-          <div style="margin-top: 1.25rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-            <span class="chip chip-accent" style="font-size: 0.7rem;">tfc-news-agg feeds Ideas tab</span>
-            <span class="chip chip-accent" style="font-size: 0.7rem;">tfc-crm-helper shares Airtable</span>
+          <div class="arch-flow">&darr;</div>
+
+          <div class="arch-dash-box">
+            <div style="font-weight: 700; font-size: 0.95rem;">TFC Dashboard</div>
+            <div style="font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">next.js + tailwind + vercel</div>
+          </div>
+          <div style="margin-top: 0.3rem;"><code>tfc-dash</code></div>
+
+          <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span class="tag tag-accent">tfc-news-agg &rarr; ideas tab</span>
+            <span class="tag tag-accent">tfc-crm-helper shares airtable</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- METRICS STRATEGY -->
+    <!-- DESIGN PROPOSALS -->
+    <section>
+      <h2>Dashboard UI Proposals</h2>
+      <p>Five design directions we're exploring. Click any to view fullscreen.</p>
+      <div class="gallery-grid" style="margin-top: 1.25rem;">
+        <div class="mockup-card wide" onclick="openMockup('designs/01-vercel-dark.html')">
+          <div class="mockup-frame-wrap">
+            <iframe class="mockup-frame" src="designs/01-vercel-dark.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+          </div>
+          <div class="mockup-info">
+            <span class="mockup-name">01 &mdash; Vercel Dark</span>
+            <span class="mockup-style">Near-black, ultra-minimal, data-forward</span>
+          </div>
+        </div>
+        <div class="mockup-card" onclick="openMockup('designs/02-linear-purple.html')">
+          <div class="mockup-frame-wrap">
+            <iframe class="mockup-frame" src="designs/02-linear-purple.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+          </div>
+          <div class="mockup-info">
+            <span class="mockup-name">02 &mdash; Linear</span>
+            <span class="mockup-style">Purple glass</span>
+          </div>
+        </div>
+        <div class="mockup-card" onclick="openMockup('designs/03-raycast-warm.html')">
+          <div class="mockup-frame-wrap">
+            <iframe class="mockup-frame" src="designs/03-raycast-warm.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+          </div>
+          <div class="mockup-info">
+            <span class="mockup-name">03 &mdash; Raycast</span>
+            <span class="mockup-style">Warm light</span>
+          </div>
+        </div>
+        <div class="mockup-card" onclick="openMockup('designs/04-stripe-clean.html')">
+          <div class="mockup-frame-wrap">
+            <iframe class="mockup-frame" src="designs/04-stripe-clean.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+          </div>
+          <div class="mockup-info">
+            <span class="mockup-name">04 &mdash; Stripe</span>
+            <span class="mockup-style">Dense, data-first</span>
+          </div>
+        </div>
+        <div class="mockup-card wide" onclick="openMockup('designs/05-gradient-modern.html')">
+          <div class="mockup-frame-wrap">
+            <iframe class="mockup-frame" src="designs/05-gradient-modern.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+          </div>
+          <div class="mockup-info">
+            <span class="mockup-name">05 &mdash; Gradient Modern</span>
+            <span class="mockup-style">Bold gradients, animated, expressive</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRICS -->
     <section>
       <h2>Metrics Strategy</h2>
       <p>What we'll track per platform and across channels.</p>
@@ -814,8 +1034,8 @@
         <div class="card metric-card">
           <h3>Substack</h3>
           <ul class="metric-list">
-            <li>Subscriber count (if accessible)</li>
-            <li>Open rate (if accessible)</li>
+            <li>Subscriber count</li>
+            <li>Open rate</li>
             <li>Post frequency</li>
             <li>Growth trajectory</li>
           </ul>
@@ -824,7 +1044,7 @@
           <h3>Cross-Channel</h3>
           <ul class="metric-list">
             <li>Growth velocity comparison</li>
-            <li>Which channel is growing fastest</li>
+            <li>Which channel growing fastest</li>
             <li>Engagement benchmarks per channel</li>
             <li>Content cadence tracking</li>
           </ul>
@@ -837,62 +1057,62 @@
       <h2>Tech Stack &amp; Repos</h2>
       <div class="stack-grid">
         <div class="stack-item">
-          <div class="stack-label">Frontend</div>
+          <div class="label">Frontend</div>
           <div class="stack-value">Next.js + Tailwind</div>
         </div>
         <div class="stack-item">
-          <div class="stack-label">Hosting</div>
+          <div class="label">Hosting</div>
           <div class="stack-value">Vercel</div>
         </div>
         <div class="stack-item">
-          <div class="stack-label">Structured Data</div>
+          <div class="label">Structured Data</div>
           <div class="stack-value">Airtable SDK</div>
         </div>
         <div class="stack-item">
-          <div class="stack-label">Newsletter API</div>
-          <div class="stack-value">Ghost Content API</div>
+          <div class="label">Newsletter</div>
+          <div class="stack-value">Ghost API</div>
         </div>
         <div class="stack-item">
-          <div class="stack-label">AI / LLM</div>
-          <div class="stack-value">Claude (Anthropic)</div>
+          <div class="label">AI / LLM</div>
+          <div class="stack-value">Claude</div>
         </div>
         <div class="stack-item">
-          <div class="stack-label">Scraping Fallback</div>
+          <div class="label">Scraping</div>
           <div class="stack-value">Playwright MCP</div>
         </div>
       </div>
-      <div class="repo-grid">
-        <div class="repo-badge">tfc-dash <span class="repo-status">scaffold</span></div>
-        <div class="repo-badge">tfc-brain <span class="repo-status">scaffold</span></div>
-        <div class="repo-badge">tfc-news-agg <span class="repo-status">scaffold</span></div>
-        <div class="repo-badge">tfc-crm-helper <span class="repo-status">scaffold</span></div>
+      <div class="repo-row">
+        <span class="repo-chip">tfc-dash</span>
+        <span class="repo-chip">tfc-brain</span>
+        <span class="repo-chip">tfc-news-agg</span>
+        <span class="repo-chip">tfc-crm-helper</span>
       </div>
     </section>
 
     <!-- TIMELINE -->
     <section>
       <h2>Gate Timeline</h2>
-      <div class="timeline">
-        <div class="timeline-node">
-          <div class="timeline-date">May 29</div>
-          <div class="timeline-title">Gate 1</div>
-          <div class="timeline-desc">Scope locked, wireframes, stack confirmed, work split</div>
-          <div class="timeline-urgent">3 days away</div>
+      <div class="tl">
+        <div class="tl-node">
+          <div class="tl-date">May 29</div>
+          <div class="tl-title">Gate 1</div>
+          <div class="tl-desc">Scope, wireframes, stack, work split</div>
+          <div class="tl-badge">3 days</div>
         </div>
-        <div class="timeline-node">
-          <div class="timeline-date">June 26</div>
-          <div class="timeline-title">Gate 2</div>
-          <div class="timeline-desc">MVP &mdash; LinkedIn + Ghost data live, skeleton deployed</div>
+        <div class="tl-node">
+          <div class="tl-date">June 26</div>
+          <div class="tl-title">Gate 2</div>
+          <div class="tl-desc">MVP &mdash; LinkedIn + Ghost live, skeleton deployed</div>
         </div>
-        <div class="timeline-node">
-          <div class="timeline-date">July 24</div>
-          <div class="timeline-title">Gate 3</div>
-          <div class="timeline-desc">3+ sources, AI prototype, article feed integrated</div>
+        <div class="tl-node">
+          <div class="tl-date">July 24</div>
+          <div class="tl-title">Gate 3</div>
+          <div class="tl-desc">3+ sources, AI prototype, article feed</div>
         </div>
-        <div class="timeline-node">
-          <div class="timeline-date">Aug 17</div>
-          <div class="timeline-title">Gate 4</div>
-          <div class="timeline-desc">Ship &mdash; daily-use ready, mobile-friendly, documented</div>
+        <div class="tl-node">
+          <div class="tl-date">Aug 17</div>
+          <div class="tl-title">Gate 4</div>
+          <div class="tl-desc">Ship &mdash; daily-use ready, documented</div>
         </div>
       </div>
     </section>
@@ -900,19 +1120,19 @@
     <!-- OWNERSHIP -->
     <section>
       <h2>Ownership &amp; Work Split</h2>
-      <div class="ownership-grid">
-        <div class="card owner-card">
-          <div class="owner-label primary">Danny Gardner &mdash; Primary</div>
+      <div class="own-grid">
+        <div class="card own-card primary">
+          <div class="label" style="color: var(--accent); margin-bottom: 0.75rem;">Danny Gardner &mdash; Primary</div>
           <ul>
             <li>Full dashboard build (both tabs)</li>
-            <li>All API integrations (Ghost, LinkedIn)</li>
+            <li>All API + Playwright integrations</li>
             <li>Airtable schema design</li>
             <li>Architecture &amp; deployment</li>
             <li>Core component library</li>
           </ul>
         </div>
-        <div class="card owner-card">
-          <div class="owner-label modular">Kush Behl &mdash; Modular Features</div>
+        <div class="card own-card modular">
+          <div class="label" style="color: var(--green); margin-bottom: 0.75rem;">Kush Behl &mdash; Feature Modules</div>
           <ul>
             <li>New analytics widgets</li>
             <li>AI-powered features</li>
@@ -921,8 +1141,9 @@
             <li>Feature experiments</li>
           </ul>
         </div>
-        <div class="plugin-note">
-          <strong>Plugin Architecture:</strong> Danny builds the dashboard with a modular widget interface. Kush builds self-contained feature modules that slot in without touching the core app. Each module follows a defined component contract.
+        <div class="own-note">
+          <strong>Plugin Architecture:</strong> Danny builds the core with a modular widget interface.
+          Kush builds self-contained feature modules that slot in without touching the core app.
         </div>
       </div>
     </section>
@@ -931,86 +1152,86 @@
     <section>
       <h2>Risk Register</h2>
       <div class="risk-grid">
-        <div class="card risk-card">
-          <div class="severity sev-critical">Critical</div>
+        <div class="card risk-item">
+          <span class="risk-sev sev-crit">CRIT</span>
           <div class="risk-body">
             <h4>Medium API is dead</h4>
-            <p>API archived March 2023. No viable programmatic path to analytics data.</p>
-            <p class="risk-fallback">Fallback: RSS feed for post titles only, or drop Medium from scope entirely.</p>
+            <p>API archived March 2023. No programmatic path.</p>
+            <p class="risk-fallback">Plan: Playwright scrape. Fallback: RSS titles or drop from scope.</p>
           </div>
         </div>
-        <div class="card risk-card">
-          <div class="severity sev-high">High</div>
+        <div class="card risk-item">
+          <span class="risk-sev sev-high">HIGH</span>
           <div class="risk-body">
-            <h4>Substack has no official API</h4>
-            <p>Unofficial Python libraries reverse-engineer endpoints. Could break at any time.</p>
-            <p class="risk-fallback">Fallback: RSS feed + manual data entry for key metrics.</p>
+            <h4>Playwright botting detection</h4>
+            <p>LinkedIn is aggressive at detecting automation. Substack and Medium less so.</p>
+            <p class="risk-fallback">Mitigated by: 1 req/day, real browser fingerprint. Fallback: manual export.</p>
           </div>
         </div>
-        <div class="card risk-card">
-          <div class="severity sev-high">High</div>
+        <div class="card risk-item">
+          <span class="risk-sev sev-high">HIGH</span>
           <div class="risk-body">
             <h4>LinkedIn API approval timeline</h4>
             <p>Analytics API requires OAuth + case-by-case approval. Could take weeks.</p>
-            <p class="risk-fallback">Fallback: Parse manual XLS export from LinkedIn analytics dashboard.</p>
+            <p class="risk-fallback">Plan: Playwright now, API application in parallel, migrate if approved.</p>
           </div>
         </div>
-        <div class="card risk-card">
-          <div class="severity sev-high">High</div>
+        <div class="card risk-item">
+          <span class="risk-sev sev-med">MED</span>
           <div class="risk-body">
-            <h4>Playwright botting detection</h4>
-            <p>LinkedIn is most aggressive at detecting automation. Substack and Medium less so.</p>
-            <p class="risk-fallback">Mitigation: 1 request/day/platform, real browser fingerprint, single account. Fallback: manual export.</p>
+            <h4>Substack has no official API</h4>
+            <p>Unofficial Python libs reverse-engineer endpoints. Could break anytime.</p>
+            <p class="risk-fallback">Plan: Playwright preferred over unofficial libs. Fallback: RSS + manual.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- QUESTIONS FOR MUJI -->
+    <!-- QUESTIONS -->
     <section>
-      <div class="questions-section">
+      <div class="questions-wrap">
         <h2>Questions for Muji</h2>
-        <ol class="question-list">
+        <ol class="q-list">
           <li>
             <div>
               <div class="q-title">Playwright MCP approach</div>
-              <div class="q-context">Are you comfortable with daily cron scraping for LinkedIn/Substack/Medium? Any concerns about account risk at this frequency?</div>
+              <div class="q-ctx">Comfortable with daily cron scraping for LinkedIn/Substack/Medium? Any concerns about account risk at this frequency?</div>
             </div>
           </li>
           <li>
             <div>
               <div class="q-title">Medium &mdash; drop or scrape?</div>
-              <div class="q-context">API is dead, Playwright scrape is our only option. Is the data worth the effort, or should we cut it?</div>
+              <div class="q-ctx">API dead, Playwright is our only option. Worth the effort, or cut it?</div>
             </div>
           </li>
           <li>
             <div>
               <div class="q-title">LinkedIn API approval</div>
-              <div class="q-context">Should we start the approval process in parallel with Playwright, or just stick with scraping for now?</div>
+              <div class="q-ctx">Start the approval process in parallel with Playwright, or just stick with scraping?</div>
             </div>
           </li>
           <li>
             <div>
               <div class="q-title">Vector DB recommendation</div>
-              <div class="q-context">Pinecone vs Supabase pgvector vs something else? What does Muji recommend for the AI features?</div>
+              <div class="q-ctx">Pinecone vs Supabase pgvector for the Ideas tab AI features?</div>
             </div>
           </li>
           <li>
             <div>
               <div class="q-title">Airtable schema</div>
-              <div class="q-context">Should we design the schema ourselves, or is there an existing Trifecta pattern to follow?</div>
+              <div class="q-ctx">Design ourselves, or existing Trifecta pattern to follow?</div>
             </div>
           </li>
           <li>
             <div>
               <div class="q-title">Gate 1 wireframes</div>
-              <div class="q-context">Figma mockups, coded HTML prototypes, or is this plan doc sufficient for Thursday?</div>
+              <div class="q-ctx">Figma, coded prototypes, or is this plan + design proposals sufficient for Thursday?</div>
             </div>
           </li>
           <li>
             <div>
               <div class="q-title">AI feature &mdash; Claude confirmed?</div>
-              <div class="q-context">Anthropic key is already in the .env template. Is Claude the confirmed LLM choice for talk-to-your-data?</div>
+              <div class="q-ctx">Anthropic key already in .env template. Confirmed for talk-to-your-data?</div>
             </div>
           </li>
         </ol>
@@ -1018,10 +1239,31 @@
     </section>
 
     <footer>
-      <p>Trifecta Enterprises MGMT LLC &middot; Philly AI Lab Summer 2026</p>
-      <p style="margin-top: 0.35rem;"><code>tfc-dash</code> &middot; Last updated May 26, 2026</p>
+      Trifecta Enterprises MGMT LLC &middot; Philly AI Lab 2026<br>
+      <code style="font-size: 0.7rem; margin-top: 0.35rem; display: inline-block;">tfc-dash</code> &middot; updated may 26 2026
     </footer>
 
   </main>
+
+  <!-- FULLSCREEN OVERLAY -->
+  <div class="overlay" id="overlay" onclick="closeMockup()">
+    <iframe id="overlay-frame" src="" sandbox="allow-same-origin allow-scripts"></iframe>
+  </div>
+  <button class="overlay-close" id="overlay-close" onclick="closeMockup()">ESC &middot; close</button>
+
+  <script>
+    function openMockup(src) {
+      document.getElementById('overlay-frame').src = src;
+      document.getElementById('overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMockup() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('overlay-frame').src = '';
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMockup(); });
+  </script>
+
 </body>
 </html>

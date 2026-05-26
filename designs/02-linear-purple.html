@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Christie Mealo — Personal Brand Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-deepest:    #0f0f1a;
+  --bg-deep:       #141425;
+  --bg-base:       #1a1a2e;
+  --bg-surface:    #1e1e36;
+  --bg-elevated:   #24243e;
+  --bg-hover:      #2a2a4a;
+
+  --accent:        #7c3aed;
+  --accent-light:  #8b5cf6;
+  --accent-glow:   rgba(124, 58, 237, 0.35);
+  --accent-subtle: rgba(139, 92, 246, 0.12);
+
+  --text-primary:  #e8e8f0;
+  --text-secondary:#9191a8;
+  --text-muted:    #5e5e7a;
+
+  --green:  #34d399;
+  --blue:   #60a5fa;
+  --orange: #fb923c;
+  --pink:   #f472b6;
+  --cyan:   #22d3ee;
+  --red:    #f87171;
+
+  --radius-sm: 8px;
+  --radius:    12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  --sidebar-width: 240px;
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { font-size: 14px; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-deepest);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--bg-deep);
+  border-right: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-header {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-avatar {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.sidebar-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.sidebar-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-section-title {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: 16px 12px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+  user-select: none;
+}
+
+.nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background: var(--accent-subtle);
+  color: var(--accent-light);
+  box-shadow: 0 0 20px var(--accent-glow), inset 0 0 0 1px rgba(139, 92, 246, 0.15);
+}
+
+.nav-item.active .nav-icon { color: var(--accent-light); }
+
+.nav-icon {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.nav-item.active .nav-icon { opacity: 1; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+.sidebar-footer {
+  padding: 16px 10px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.sidebar-footer .nav-item {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  background: rgba(20, 20, 37, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.topbar-title {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.topbar-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-surface);
+  border-radius: var(--radius);
+  padding: 3px;
+}
+
+.topbar-tab {
+  padding: 7px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  background: none;
+  user-select: none;
+}
+
+.topbar-tab:hover { color: var(--text-primary); }
+
+.topbar-tab.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-sm);
+  padding: 7px 14px;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color var(--transition);
+  min-width: 180px;
+}
+
+.topbar-search:hover { border-color: rgba(255,255,255,0.12); }
+
+.topbar-search kbd {
+  font-family: inherit;
+  font-size: 10px;
+  background: var(--bg-elevated);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.topbar-icon-btn {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text-secondary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.topbar-icon-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.notif-dot {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 7px; height: 7px;
+  background: var(--accent-light);
+  border-radius: 50%;
+  border: 2px solid var(--bg-deep);
+}
+
+.content {
+  padding: 28px 32px 48px;
+}
+
+/* ============================================================
+   VIEW SWITCHING
+   ============================================================ */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ============================================================
+   STAT CARDS
+   ============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition);
+}
+
+.stat-card:hover {
+  border-color: rgba(255,255,255,0.08);
+  transform: translateY(-1px);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.stat-card.purple::before  { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+.stat-card.blue::before    { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.stat-card.green::before   { background: linear-gradient(90deg, #10b981, #34d399); }
+.stat-card.orange::before  { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-card.purple .stat-value  { color: #a78bfa; }
+.stat-card.blue .stat-value    { color: #60a5fa; }
+.stat-card.green .stat-value   { color: #34d399; }
+.stat-card.orange .stat-value  { color: #fbbf24; }
+
+.stat-change {
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-change.up   { color: var(--green); }
+.stat-change.down { color: var(--red); }
+
+.stat-sparkline {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 100px; height: 40px;
+  opacity: 0.15;
+}
+
+/* ============================================================
+   CHART AREA
+   ============================================================ */
+.chart-section {
+  margin-bottom: 28px;
+}
+
+.chart-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--radius-lg);
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.2), transparent 40%, transparent 60%, rgba(139,92,246,0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.chart-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.chart-filters {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+}
+
+.chart-filter {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  background: none;
+}
+
+.chart-filter.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.chart-filter:hover:not(.active) { color: var(--text-secondary); }
+
+.chart-area {
+  height: 220px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 20px 0 30px;
+}
+
+.chart-bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-bar-stack {
+  width: 100%;
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  justify-content: center;
+  height: 160px;
+}
+
+.chart-bar {
+  width: 12px;
+  border-radius: 4px 4px 2px 2px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+}
+
+.chart-bar:hover { opacity: 0.8; filter: brightness(1.2); }
+
+.chart-bar.linkedin  { background: linear-gradient(180deg, #0a66c2, #004182); }
+.chart-bar.ghost     { background: linear-gradient(180deg, #7c3aed, #5b21b6); }
+.chart-bar.substack  { background: linear-gradient(180deg, #ff6719, #e05500); }
+.chart-bar.medium    { background: linear-gradient(180deg, #1a8917, #0d6e0d); }
+
+.chart-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 3px;
+}
+
+.legend-dot.linkedin  { background: #0a66c2; }
+.legend-dot.ghost     { background: #7c3aed; }
+.legend-dot.substack  { background: #ff6719; }
+.legend-dot.medium    { background: #1a8917; }
+
+/* ============================================================
+   PLATFORM CARDS (2x2)
+   ============================================================ */
+.platforms-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.platform-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  transition: all var(--transition);
+}
+
+.platform-card:hover {
+  border-color: rgba(255,255,255,0.08);
+  transform: translateY(-1px);
+}
+
+.platform-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.platform-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.platform-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.platform-icon.linkedin  { background: rgba(10,102,194,0.15); color: #60a5fa; }
+.platform-icon.ghost     { background: rgba(124,58,237,0.15); color: #a78bfa; }
+.platform-icon.substack  { background: rgba(255,103,25,0.15); color: #fb923c; }
+.platform-icon.medium    { background: rgba(26,137,23,0.15);  color: #34d399; }
+
+.platform-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.platform-status {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.platform-status.connected {
+  background: rgba(52,211,153,0.1);
+  color: var(--green);
+}
+
+.platform-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.platform-metric-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.platform-metric-value {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.platform-metric-change {
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.platform-metric-change.up   { color: var(--green); }
+.platform-metric-change.down { color: var(--red); }
+
+/* ============================================================
+   RECENT ACTIVITY
+   ============================================================ */
+.activity-section {
+  margin-bottom: 28px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.section-link {
+  font-size: 12px;
+  color: var(--accent-light);
+  cursor: pointer;
+  font-weight: 500;
+  transition: color var(--transition);
+}
+
+.section-link:hover { color: #a78bfa; }
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: var(--radius);
+  transition: all var(--transition);
+}
+
+.activity-item:hover {
+  background: var(--bg-elevated);
+  border-color: rgba(255,255,255,0.06);
+}
+
+.activity-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.activity-dot.linkedin  { background: #0a66c2; }
+.activity-dot.ghost     { background: #7c3aed; }
+.activity-dot.substack  { background: #ff6719; }
+.activity-dot.medium    { background: #1a8917; }
+
+.activity-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.activity-text strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.activity-time {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   IDEAS VIEW
+   ============================================================ */
+.ideas-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+}
+
+.ideas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.ideas-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.add-idea-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: inherit;
+}
+
+.add-idea-btn:hover {
+  background: var(--accent-light);
+  box-shadow: 0 4px 12px rgba(124,58,237,0.3);
+}
+
+/* Article cards */
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.article-card {
+  background: rgba(30, 30, 54, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.article-card:hover {
+  background: rgba(36, 36, 62, 0.8);
+  border-color: rgba(139,92,246,0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.article-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.article-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.article-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--accent-subtle);
+  color: var(--accent-light);
+}
+
+.article-tag.linkedin  { background: rgba(10,102,194,0.12); color: #60a5fa; }
+.article-tag.ghost     { background: rgba(124,58,237,0.12); color: #a78bfa; }
+.article-tag.substack  { background: rgba(255,103,25,0.12); color: #fb923c; }
+.article-tag.medium    { background: rgba(26,137,23,0.12);  color: #34d399; }
+
+.article-status {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.article-status.draft     { background: rgba(251,191,36,0.1); color: #fbbf24; }
+.article-status.ready     { background: rgba(52,211,153,0.1); color: var(--green); }
+.article-status.published { background: rgba(96,165,250,0.1); color: var(--blue); }
+.article-status.idea      { background: rgba(139,92,246,0.1); color: var(--accent-light); }
+
+.article-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.article-excerpt {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.article-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.article-action-btn {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-size: 12px;
+}
+
+.article-action-btn:hover {
+  background: var(--accent-subtle);
+  color: var(--accent-light);
+  border-color: rgba(139,92,246,0.2);
+}
+
+/* Right sidebar (Ideas) */
+.ideas-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Topic cloud */
+.topic-cloud-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.topic-cloud-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--text-secondary);
+}
+
+.topic-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.topic-tag {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.topic-tag:hover {
+  border-color: rgba(139,92,246,0.3);
+  color: var(--accent-light);
+  background: var(--accent-subtle);
+}
+
+.topic-tag.hot {
+  background: var(--accent-subtle);
+  border-color: rgba(139,92,246,0.2);
+  color: var(--accent-light);
+}
+
+.topic-tag .count {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-left: 4px;
+}
+
+/* AI Panel */
+.ai-panel {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(139,92,246,0.04));
+}
+
+.ai-sparkle {
+  font-size: 16px;
+}
+
+.ai-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ai-panel-badge {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--accent-subtle);
+  color: var(--accent-light);
+  font-weight: 600;
+}
+
+.ai-messages {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.ai-msg {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ai-msg.assistant {
+  background: var(--bg-elevated);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+}
+
+.ai-msg.suggestion {
+  background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(139,92,246,0.05));
+  border: 1px solid rgba(139,92,246,0.15);
+  color: var(--text-primary);
+}
+
+.ai-msg strong { color: var(--accent-light); font-weight: 600; }
+
+.ai-suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ai-chip {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.ai-chip:hover {
+  border-color: rgba(139,92,246,0.3);
+  color: var(--accent-light);
+}
+
+.ai-input-area {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  gap: 8px;
+}
+
+.ai-input {
+  flex: 1;
+  padding: 9px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.ai-input::placeholder { color: var(--text-muted); }
+.ai-input:focus { border-color: rgba(139,92,246,0.4); }
+
+.ai-send-btn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.ai-send-btn:hover {
+  background: var(--accent-light);
+  box-shadow: 0 4px 12px rgba(124,58,237,0.3);
+}
+
+/* ============================================================
+   MOBILE OVERLAY
+   ============================================================ */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99;
+}
+
+.sidebar-overlay.active { display: block; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1200px) {
+  .ideas-layout {
+    grid-template-columns: 1fr 280px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .platforms-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ideas-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ideas-sidebar {
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .ideas-sidebar > * { flex: 1; }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 8px 0 32px rgba(0,0,0,0.4);
+  }
+
+  .main {
+    margin-left: 0;
+  }
+
+  .mobile-toggle { display: flex; }
+
+  .content { padding: 20px 16px 40px; }
+
+  .topbar { padding: 16px; }
+
+  .topbar-search { display: none; }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-card { padding: 16px; }
+  .stat-value { font-size: 24px; }
+
+  .chart-bar-stack { height: 120px; }
+
+  .ideas-sidebar {
+    flex-direction: column;
+  }
+
+  .chart-legend {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar-tabs {
+    display: none;
+  }
+
+  .mobile-tab-bar {
+    display: flex !important;
+  }
+}
+
+.mobile-tab-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg-deep);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  padding: 8px 16px;
+  gap: 4px;
+  z-index: 50;
+  justify-content: center;
+}
+
+.mobile-tab-bar .topbar-tab {
+  flex: 1;
+  text-align: center;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+
+/* ============================================================
+   SVG ICONS (inline)
+   ============================================================ */
+.icon { display: inline-block; width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- =================== SIDEBAR =================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="sidebar-avatar">CM</div>
+        <div>
+          <div class="sidebar-name">Christie Mealo</div>
+          <div class="sidebar-label">Content Creator</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Overview</div>
+      <div class="nav-item active" data-nav="dashboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        Dashboard
+      </div>
+
+      <div class="nav-section-title">Platforms</div>
+      <div class="nav-item" data-nav="linkedin">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.95v5.66H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/>
+        </svg>
+        LinkedIn
+        <span class="nav-badge">3</span>
+      </div>
+      <div class="nav-item" data-nav="ghost">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C6.48 2 2 6.48 2 12v7a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-7c0-5.52-4.48-10-10-10z"/><circle cx="8.5" cy="12.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="12.5" r="1.5" fill="currentColor"/>
+        </svg>
+        Ghost
+      </div>
+      <div class="nav-item" data-nav="substack">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22 5.5H2V8h20V5.5zM22 10H2v2.5h20V10zM2 14.5v8l10-5 10 5v-8H2z"/>
+        </svg>
+        Substack
+        <span class="nav-badge">1</span>
+      </div>
+
+      <div class="nav-section-title">Tools</div>
+      <div class="nav-item" data-nav="ideas">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a7 7 0 0 1 4 12.7V17a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2.3A7 7 0 0 1 12 2z"/><line x1="10" y1="21" x2="14" y2="21"/>
+        </svg>
+        Ideas
+        <span class="nav-badge">12</span>
+      </div>
+      <div class="nav-item" data-nav="calendar">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Calendar
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="nav-item" data-nav="settings">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Settings
+      </div>
+    </div>
+  </aside>
+
+  <!-- =================== MAIN =================== -->
+  <main class="main">
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h1 class="topbar-title">Dashboard</h1>
+      </div>
+      <div class="topbar-tabs">
+        <button class="topbar-tab active" data-view="performance">Performance</button>
+        <button class="topbar-tab" data-view="ideas">Ideas</button>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Search...
+          <kbd>/</kbd>
+        </div>
+        <button class="topbar-icon-btn" aria-label="Notifications">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+        <button class="topbar-icon-btn" aria-label="Export">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- =================== PERFORMANCE VIEW =================== -->
+      <div class="view active" id="performanceView">
+
+        <!-- Stat Cards -->
+        <div class="stats-grid">
+          <div class="stat-card purple">
+            <div class="stat-label">Total Followers</div>
+            <div class="stat-value">14,283</div>
+            <div class="stat-change up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+              +12.4% this month
+            </div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-label">Avg. Engagement</div>
+            <div class="stat-value">6.8%</div>
+            <div class="stat-change up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+              +2.1% this month
+            </div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-label">Posts Published</div>
+            <div class="stat-value">47</div>
+            <div class="stat-change up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+              +8 from last month
+            </div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-label">Newsletter Subs</div>
+            <div class="stat-value">3,421</div>
+            <div class="stat-change up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+              +340 this month
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-section">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Content Performance</h3>
+              <div class="chart-filters">
+                <button class="chart-filter active">7D</button>
+                <button class="chart-filter">30D</button>
+                <button class="chart-filter">90D</button>
+                <button class="chart-filter">1Y</button>
+              </div>
+            </div>
+            <div class="chart-area" id="chartArea">
+              <!-- Bars generated by JS -->
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item"><span class="legend-dot linkedin"></span> LinkedIn</div>
+              <div class="legend-item"><span class="legend-dot ghost"></span> Ghost</div>
+              <div class="legend-item"><span class="legend-dot substack"></span> Substack</div>
+              <div class="legend-item"><span class="legend-dot medium"></span> Medium</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Platform Cards (2x2) -->
+        <div class="section-header">
+          <h3 class="section-title">Platform Performance</h3>
+          <span class="section-link">View All</span>
+        </div>
+        <div class="platforms-grid">
+          <!-- LinkedIn -->
+          <div class="platform-card">
+            <div class="platform-card-header">
+              <div class="platform-info">
+                <div class="platform-icon linkedin">in</div>
+                <div class="platform-name">LinkedIn</div>
+              </div>
+              <span class="platform-status connected">Connected</span>
+            </div>
+            <div class="platform-metrics">
+              <div>
+                <div class="platform-metric-label">Followers</div>
+                <div class="platform-metric-value">8,412</div>
+                <div class="platform-metric-change up">+4.2%</div>
+              </div>
+              <div>
+                <div class="platform-metric-label">Impressions</div>
+                <div class="platform-metric-value">62.3K</div>
+                <div class="platform-metric-change up">+18.7%</div>
+              </div>
+              <div>
+                <div class="platform-metric-label">Engagement</div>
+                <div class="platform-metric-value">8.1%</div>
+                <div class="platform-metric-change up">+1.3%</div>
+              </div>
+            </div>
+          </div>
+          <!-- Ghost -->
+          <div class="platform-card">
+            <div class="platform-card-header">
+              <div class="platform-info">
+                <div class="platform-icon ghost">G</div>
+                <div class="platform-name">Ghost Newsletter</div>
+              </div>
+              <span class="platform-status connected">Connected</span>
+            </div>
+            <div class="platform-metrics">
+              <div>
+                <div class="platform-metric-label">Subscribers</div>
+                <div class="platform-metric-value">2,184</div>
+                <div class="platform-metric-change up">+6.8%</div>
+              </div>
+              <div>
+                <div class="platform-metric-label">Open Rate</div>
+                <div class="platform-metric-value">48.2%</div>
+                <div class="platform-metric-change down">-1.4%</div>
+              </div>
+              <div>
+                <div class="platform-metric-label">Click Rate</div>
+                <div class="platform-metric-value">12.6%</div>
+                <div class="platform-metric-change up">+2.1%</div>
+              </div>
+            </div>
+          </div>
+          <!-- Substack -->
+          <div class="platform-card">
+            <div class="platform-card-header">
+              <div class="platform-info">
+                <div class="platform-icon substack">S</div>
+                <div class="platform-name">Substack</div>
+              </div>
+              <span class="platform-status connected">Connected</span>
+            </div>
+            <div class="platform-metrics">
+              <div>
+                <div class="platform-metric-label">Subscribers</div>
+                <div class="platform-metric-value">1,237</div>
+                <div class="platform-metric-change up">+11.2%</div>
+              </div>
+              <div>
+                <div class="platform-metric-label">Open Rate</div>
+                <div class="platform-metric-value">52.7%</div>
+                <div class="platform-metric-change up">+3.4%</div>
+              </div>
+              <div>
+                <div class="platform-metric-label">Paid Subs</div>
+                <div class="platform-metric-value">89</div>
+                <div class="platform-metric-change up">+14</div>
+              </div>
+            </div>
+          </div>
+          <!-- Medium -->
+          <div class="platform-card">
+            <div class="platform-card-header">
+              <div class="platform-info">
+                <div class="platform-icon medium">M</div>
+                <div class="platform-name">Medium</div>
+              </div>
+              <span class="platform-status connected">Connected</span>
+            </div>
+            <div class="platform-metrics">
+              <div>
+                <div class="platform-metric-label">Followers</div>
+                <div class="platform-metric-value">2,450</div>
+                <div class="platform-metric-change up">+3.9%</div>
+              </div>
+              <div>
+                <div class="platform-metric-label">Reads</div>
+                <div class="platform-metric-value">18.4K</div>
+                <div class="platform-metric-change up">+22.1%</div>
+              </div>
+              <div>
+                <div class="platform-metric-label">Earnings</div>
+                <div class="platform-metric-value">$847</div>
+                <div class="platform-metric-change up">+$124</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-section">
+          <div class="section-header">
+            <h3 class="section-title">Recent Activity</h3>
+            <span class="section-link">View All</span>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <span class="activity-dot linkedin"></span>
+              <span class="activity-text">LinkedIn post <strong>"Why Your Content Strategy Needs a Reset"</strong> reached 2.4K views</span>
+              <span class="activity-time">2h ago</span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-dot ghost"></span>
+              <span class="activity-text">Ghost newsletter <strong>"The Creator Economy in 2026"</strong> sent to 2,184 subscribers</span>
+              <span class="activity-time">5h ago</span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-dot substack"></span>
+              <span class="activity-text">Substack article <strong>"Building in Public: Month 6"</strong> gained <strong>14 new paid subscribers</strong></span>
+              <span class="activity-time">1d ago</span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-dot medium"></span>
+              <span class="activity-text">Medium story <strong>"Stop Chasing Algorithms"</strong> selected for <strong>Boost distribution</strong></span>
+              <span class="activity-time">2d ago</span>
+            </div>
+            <div class="activity-item">
+              <span class="activity-dot linkedin"></span>
+              <span class="activity-text">LinkedIn carousel <strong>"10 Lessons from 1 Year of Newsletters"</strong> received <strong>187 saves</strong></span>
+              <span class="activity-time">3d ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================== IDEAS VIEW =================== -->
+      <div class="view" id="ideasView">
+        <div class="ideas-layout">
+          <!-- Left: Article Feed -->
+          <div class="ideas-main">
+            <div class="ideas-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <h3 class="section-title">Content Ideas</h3>
+                <span class="ideas-count">12 ideas</span>
+              </div>
+              <button class="add-idea-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                New Idea
+              </button>
+            </div>
+
+            <div class="articles-list">
+              <!-- Article 1 -->
+              <div class="article-card">
+                <div class="article-card-top">
+                  <div class="article-tags">
+                    <span class="article-tag linkedin">LinkedIn</span>
+                    <span class="article-tag ghost">Ghost</span>
+                  </div>
+                  <span class="article-status ready">Ready</span>
+                </div>
+                <div class="article-title">The Hidden Cost of "Just Ship It" Culture</div>
+                <div class="article-excerpt">Why the bias toward speed over substance is quietly destroying content quality across every platform, and what smart creators are doing differently.</div>
+                <div class="article-footer">
+                  <div class="article-meta">
+                    <span>~8 min read</span>
+                    <span>Updated 2h ago</span>
+                  </div>
+                  <div class="article-actions">
+                    <button class="article-action-btn" title="Edit">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                    </button>
+                    <button class="article-action-btn" title="Schedule">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Article 2 -->
+              <div class="article-card">
+                <div class="article-card-top">
+                  <div class="article-tags">
+                    <span class="article-tag substack">Substack</span>
+                  </div>
+                  <span class="article-status draft">Draft</span>
+                </div>
+                <div class="article-title">Building in Public: Month 7 -- Revenue Breakdown</div>
+                <div class="article-excerpt">Transparent breakdown of all revenue streams, what's working, what I'm cutting, and the surprising channel that outperformed everything else this month.</div>
+                <div class="article-footer">
+                  <div class="article-meta">
+                    <span>~12 min read</span>
+                    <span>Updated 1d ago</span>
+                  </div>
+                  <div class="article-actions">
+                    <button class="article-action-btn" title="Edit">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                    </button>
+                    <button class="article-action-btn" title="Schedule">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Article 3 -->
+              <div class="article-card">
+                <div class="article-card-top">
+                  <div class="article-tags">
+                    <span class="article-tag medium">Medium</span>
+                    <span class="article-tag linkedin">LinkedIn</span>
+                  </div>
+                  <span class="article-status published">Published</span>
+                </div>
+                <div class="article-title">Why I Stopped Optimizing for Virality</div>
+                <div class="article-excerpt">After 18 months of chasing algorithmic approval, I shifted my entire strategy. Here's what happened to my audience quality, revenue, and mental health.</div>
+                <div class="article-footer">
+                  <div class="article-meta">
+                    <span>~6 min read</span>
+                    <span>Published May 22</span>
+                  </div>
+                  <div class="article-actions">
+                    <button class="article-action-btn" title="Analytics">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </button>
+                    <button class="article-action-btn" title="Repurpose">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Article 4 -->
+              <div class="article-card">
+                <div class="article-card-top">
+                  <div class="article-tags">
+                    <span class="article-tag ghost">Ghost</span>
+                  </div>
+                  <span class="article-status idea">Idea</span>
+                </div>
+                <div class="article-title">The Newsletter Stack That Runs My Business</div>
+                <div class="article-excerpt">A deep dive into every tool, automation, and workflow behind a newsletter that generates $4K/month in revenue with under 5 hours of work per week.</div>
+                <div class="article-footer">
+                  <div class="article-meta">
+                    <span>Outline only</span>
+                    <span>Created 3d ago</span>
+                  </div>
+                  <div class="article-actions">
+                    <button class="article-action-btn" title="Edit">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                    </button>
+                    <button class="article-action-btn" title="AI Expand">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Article 5 -->
+              <div class="article-card">
+                <div class="article-card-top">
+                  <div class="article-tags">
+                    <span class="article-tag linkedin">LinkedIn</span>
+                  </div>
+                  <span class="article-status idea">Idea</span>
+                </div>
+                <div class="article-title">What 500 DMs Taught Me About Audience Building</div>
+                <div class="article-excerpt">I replied to every single DM for 30 days straight. The patterns I noticed completely changed how I think about community.</div>
+                <div class="article-footer">
+                  <div class="article-meta">
+                    <span>Notes only</span>
+                    <span>Created 5d ago</span>
+                  </div>
+                  <div class="article-actions">
+                    <button class="article-action-btn" title="Edit">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                    </button>
+                    <button class="article-action-btn" title="AI Expand">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Sidebar -->
+          <div class="ideas-sidebar">
+            <!-- Topic Cloud -->
+            <div class="topic-cloud-card">
+              <div class="topic-cloud-title">Topic Cloud</div>
+              <div class="topic-cloud">
+                <span class="topic-tag hot">Creator Economy <span class="count">8</span></span>
+                <span class="topic-tag hot">Newsletter Growth <span class="count">6</span></span>
+                <span class="topic-tag">Content Strategy <span class="count">5</span></span>
+                <span class="topic-tag">Personal Branding <span class="count">4</span></span>
+                <span class="topic-tag">Monetization <span class="count">4</span></span>
+                <span class="topic-tag">Audience Building <span class="count">3</span></span>
+                <span class="topic-tag">Writing Process <span class="count">3</span></span>
+                <span class="topic-tag">Platform Strategy <span class="count">2</span></span>
+                <span class="topic-tag">Analytics <span class="count">2</span></span>
+                <span class="topic-tag">Community <span class="count">1</span></span>
+              </div>
+            </div>
+
+            <!-- AI Panel -->
+            <div class="ai-panel">
+              <div class="ai-panel-header">
+                <span class="ai-sparkle">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </span>
+                <span class="ai-panel-title">AI Content Assistant</span>
+                <span class="ai-panel-badge">GPT-4o</span>
+              </div>
+              <div class="ai-messages">
+                <div class="ai-msg assistant">
+                  Hey Christie! Based on your recent performance, here are some observations:
+                </div>
+                <div class="ai-msg suggestion">
+                  <strong>Trending opportunity:</strong> Your "Building in Public" series has 3x higher engagement than other content. Consider expanding it into a weekly format on Substack with LinkedIn teasers.
+                </div>
+                <div class="ai-msg assistant">
+                  I also noticed your Ghost open rates dipped slightly. Try A/B testing subject lines with questions vs. statements this week.
+                  <div class="ai-suggestion-chips">
+                    <span class="ai-chip">Draft subject lines</span>
+                    <span class="ai-chip">Analyze best senders</span>
+                    <span class="ai-chip">Compare to benchmarks</span>
+                  </div>
+                </div>
+                <div class="ai-msg suggestion">
+                  <strong>Cross-post idea:</strong> Your Medium article "Stop Chasing Algorithms" is performing well. Repurpose the key takeaways into a LinkedIn carousel and a Twitter thread for maximum reach.
+                </div>
+              </div>
+              <div class="ai-input-area">
+                <input class="ai-input" type="text" placeholder="Ask about content ideas, strategy...">
+                <button class="ai-send-btn" aria-label="Send">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Tab Bar (visible <480px) -->
+    <div class="mobile-tab-bar">
+      <button class="topbar-tab active" data-view="performance">Performance</button>
+      <button class="topbar-tab" data-view="ideas">Ideas</button>
+    </div>
+  </main>
+</div>
+
+<script>
+(function() {
+  // ===== Tab switching =====
+  const views = {
+    performance: document.getElementById('performanceView'),
+    ideas: document.getElementById('ideasView')
+  };
+
+  function switchView(viewName) {
+    Object.values(views).forEach(v => v.classList.remove('active'));
+    if (views[viewName]) views[viewName].classList.add('active');
+
+    document.querySelectorAll('[data-view]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.view === viewName);
+    });
+  }
+
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => switchView(btn.dataset.view));
+  });
+
+  // ===== Chart filter switching =====
+  document.querySelectorAll('.chart-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.chart-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderChart();
+    });
+  });
+
+  // ===== Mobile sidebar =====
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const toggle = document.getElementById('mobileToggle');
+
+  toggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+  });
+
+  // ===== Sidebar nav highlights =====
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+
+      // Map nav items to views
+      const nav = item.dataset.nav;
+      if (nav === 'dashboard') switchView('performance');
+      else if (nav === 'ideas') switchView('ideas');
+
+      // Close mobile sidebar
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
+  });
+
+  // ===== Bar Chart =====
+  const chartData = {
+    '7D': [
+      { label: 'Mon', linkedin: 65, ghost: 40, substack: 30, medium: 25 },
+      { label: 'Tue', linkedin: 50, ghost: 55, substack: 25, medium: 35 },
+      { label: 'Wed', linkedin: 80, ghost: 35, substack: 45, medium: 20 },
+      { label: 'Thu', linkedin: 45, ghost: 60, substack: 35, medium: 40 },
+      { label: 'Fri', linkedin: 90, ghost: 50, substack: 55, medium: 30 },
+      { label: 'Sat', linkedin: 35, ghost: 25, substack: 20, medium: 15 },
+      { label: 'Sun', linkedin: 55, ghost: 45, substack: 40, medium: 35 }
+    ],
+    '30D': [
+      { label: 'W1', linkedin: 70, ghost: 45, substack: 35, medium: 30 },
+      { label: 'W2', linkedin: 85, ghost: 55, substack: 40, medium: 38 },
+      { label: 'W3', linkedin: 60, ghost: 50, substack: 48, medium: 25 },
+      { label: 'W4', linkedin: 95, ghost: 65, substack: 55, medium: 42 }
+    ],
+    '90D': [
+      { label: 'Mar', linkedin: 55, ghost: 35, substack: 25, medium: 20 },
+      { label: 'Apr', linkedin: 72, ghost: 48, substack: 38, medium: 32 },
+      { label: 'May', linkedin: 90, ghost: 60, substack: 52, medium: 40 }
+    ],
+    '1Y': [
+      { label: 'Jun', linkedin: 30, ghost: 20, substack: 10, medium: 8 },
+      { label: 'Jul', linkedin: 35, ghost: 22, substack: 12, medium: 10 },
+      { label: 'Aug', linkedin: 40, ghost: 28, substack: 18, medium: 15 },
+      { label: 'Sep', linkedin: 48, ghost: 32, substack: 22, medium: 18 },
+      { label: 'Oct', linkedin: 55, ghost: 38, substack: 28, medium: 22 },
+      { label: 'Nov', linkedin: 60, ghost: 42, substack: 32, medium: 28 },
+      { label: 'Dec', linkedin: 52, ghost: 36, substack: 26, medium: 20 },
+      { label: 'Jan', linkedin: 58, ghost: 40, substack: 30, medium: 25 },
+      { label: 'Feb', linkedin: 65, ghost: 45, substack: 35, medium: 30 },
+      { label: 'Mar', linkedin: 72, ghost: 50, substack: 40, medium: 32 },
+      { label: 'Apr', linkedin: 80, ghost: 55, substack: 45, medium: 36 },
+      { label: 'May', linkedin: 90, ghost: 62, substack: 52, medium: 42 }
+    ]
+  };
+
+  function renderChart() {
+    const activeFilter = document.querySelector('.chart-filter.active').textContent;
+    const data = chartData[activeFilter] || chartData['7D'];
+    const chart = document.getElementById('chartArea');
+    chart.innerHTML = '';
+
+    data.forEach((d, i) => {
+      const group = document.createElement('div');
+      group.className = 'chart-bar-group';
+
+      const stack = document.createElement('div');
+      stack.className = 'chart-bar-stack';
+
+      const platforms = ['linkedin', 'ghost', 'substack', 'medium'];
+      platforms.forEach(p => {
+        const bar = document.createElement('div');
+        bar.className = 'chart-bar ' + p;
+        bar.style.height = '0px';
+        bar.title = p.charAt(0).toUpperCase() + p.slice(1) + ': ' + d[p] + '%';
+        stack.appendChild(bar);
+
+        // Animate in
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            bar.style.height = (d[p] / 100 * 160) + 'px';
+          }, i * 60 + platforms.indexOf(p) * 30);
+        });
+      });
+
+      const label = document.createElement('div');
+      label.className = 'chart-label';
+      label.textContent = d.label;
+
+      group.appendChild(stack);
+      group.appendChild(label);
+      chart.appendChild(group);
+    });
+  }
+
+  renderChart();
+
+  // ===== AI input (cosmetic) =====
+  const aiInput = document.querySelector('.ai-input');
+  const aiSendBtn = document.querySelector('.ai-send-btn');
+
+  function handleAISend() {
+    const val = aiInput.value.trim();
+    if (!val) return;
+
+    const messages = document.querySelector('.ai-messages');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'ai-msg suggestion';
+    userMsg.innerHTML = '<strong>You:</strong> ' + val;
+    messages.appendChild(userMsg);
+    aiInput.value = '';
+
+    setTimeout(() => {
+      const reply = document.createElement('div');
+      reply.className = 'ai-msg assistant';
+      reply.textContent = 'That\'s a great angle! Let me analyze your recent content performance and suggest some approaches...';
+      messages.appendChild(reply);
+      messages.scrollTop = messages.scrollHeight;
+    }, 800);
+
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  aiSendBtn.addEventListener('click', handleAISend);
+  aiInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleAISend();
+  });
+
+  // ===== AI chip clicks =====
+  document.querySelectorAll('.ai-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      aiInput.value = chip.textContent;
+      aiInput.focus();
+    });
+  });
+})();
+</script>
+</body>
+</html>

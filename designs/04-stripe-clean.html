@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Brand Dashboard — Stripe Clean</title>
+<style>
+  /* ── Reset & Base ─────────────────────────────────────── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --accent: #635bff;
+    --accent-light: #7a73ff;
+    --accent-bg: #f0efff;
+    --bg: #f6f8fa;
+    --surface: #ffffff;
+    --border: #e3e8ee;
+    --border-light: #edf0f3;
+    --text-primary: #1a1f36;
+    --text-secondary: #697386;
+    --text-tertiary: #a3acb9;
+    --green: #0d9f6e;
+    --green-bg: #ecfdf3;
+    --red: #cd3d64;
+    --red-bg: #fef2f4;
+    --sidebar-w: 228px;
+    --topbar-h: 56px;
+    --radius: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+    --shadow-card: 0 1px 3px rgba(0,0,0,.04), 0 0 0 1px var(--border);
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  html { font-size: 14px; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Layout Shell ─────────────────────────────────────── */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ── Sidebar ──────────────────────────────────────────── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    transition: transform .2s ease;
+  }
+
+  .sidebar-logo {
+    padding: 20px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo .logo-mark {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 13px;
+  }
+  .sidebar-logo .logo-text {
+    font-weight: 600; font-size: 14px; color: var(--text-primary);
+    letter-spacing: -.2px;
+  }
+
+  .sidebar-nav { flex: 1; padding: 8px 8px; overflow-y: auto; }
+
+  .nav-section-label {
+    font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: .6px;
+    padding: 16px 12px 6px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 12px;
+    border-radius: var(--radius);
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all .12s ease;
+    text-decoration: none;
+    position: relative;
+  }
+  .nav-item:hover { background: var(--bg); color: var(--text-primary); }
+  .nav-item.active {
+    background: var(--accent-bg);
+    color: var(--accent);
+  }
+  .nav-item .nav-icon {
+    width: 18px; height: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-item .nav-icon svg { width: 16px; height: 16px; }
+  .nav-item .badge {
+    margin-left: auto;
+    font-size: 11px; font-weight: 600;
+    background: var(--accent-bg); color: var(--accent);
+    padding: 1px 7px; border-radius: 10px;
+  }
+
+  .sidebar-profile {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-profile .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 600; font-size: 12px; flex-shrink: 0;
+  }
+  .sidebar-profile .profile-info { min-width: 0; }
+  .sidebar-profile .profile-name {
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sidebar-profile .profile-email {
+    font-size: 11px; color: var(--text-tertiary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ── Main Content ─────────────────────────────────────── */
+  .main {
+    flex: 1;
+    margin-left: var(--sidebar-w);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* ── Top Bar ──────────────────────────────────────────── */
+  .topbar {
+    height: var(--topbar-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .topbar-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+
+  .topbar-tabs {
+    display: flex; gap: 0; margin-left: 8px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 2px;
+  }
+  .topbar-tab {
+    padding: 5px 14px;
+    font-size: 12.5px; font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all .12s ease;
+    border: none; background: none;
+    font-family: var(--font);
+  }
+  .topbar-tab:hover { color: var(--text-primary); }
+  .topbar-tab.active {
+    background: var(--surface);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    font-size: 12.5px; font-weight: 500;
+    font-family: var(--font);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all .12s ease;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+  }
+  .btn:hover { background: var(--bg); }
+  .btn svg { width: 14px; height: 14px; }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover { background: var(--accent-light); border-color: var(--accent-light); }
+
+  .date-selector {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    font-size: 12.5px; font-weight: 500;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font);
+  }
+  .date-selector:hover { border-color: #c4cdd5; }
+  .date-selector svg { width: 14px; height: 14px; }
+
+  /* ── Mobile hamburger ─────────────────────────────────── */
+  .hamburger {
+    display: none;
+    background: none; border: none; cursor: pointer;
+    padding: 4px;
+  }
+  .hamburger svg { width: 20px; height: 20px; color: var(--text-primary); }
+  .sidebar-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.3); z-index: 99;
+  }
+
+  /* ── Page Content ─────────────────────────────────────── */
+  .page-content { padding: 24px; flex: 1; }
+
+  /* ── Metric Cards ─────────────────────────────────────── */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+  }
+  .metric-label {
+    font-size: 12px; font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .metric-value-row {
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .metric-value {
+    font-size: 28px; font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -.5px;
+    line-height: 1;
+  }
+  .metric-change {
+    font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 2px;
+    padding: 2px 6px; border-radius: 4px;
+  }
+  .metric-change.up { color: var(--green); background: var(--green-bg); }
+  .metric-change.down { color: var(--red); background: var(--red-bg); }
+  .metric-change svg { width: 12px; height: 12px; }
+
+  .metric-sparkline {
+    margin-top: 16px;
+    height: 36px;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .sparkline-bar {
+    flex: 1;
+    background: var(--accent-bg);
+    border-radius: 2px;
+    min-height: 4px;
+    transition: background .12s ease;
+  }
+  .sparkline-bar:last-child { background: var(--accent); }
+
+  /* ── Chart Area ───────────────────────────────────────── */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .chart-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .chart-title { font-size: 14px; font-weight: 600; }
+  .chart-filters { display: flex; gap: 4px; }
+  .chart-filter {
+    padding: 4px 10px;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-secondary);
+    background: none; border: 1px solid transparent;
+    border-radius: 4px; cursor: pointer;
+    font-family: var(--font);
+  }
+  .chart-filter:hover { color: var(--text-primary); }
+  .chart-filter.active {
+    background: var(--bg);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
+
+  .chart-area {
+    height: 220px;
+    position: relative;
+    border-left: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+    margin-left: 40px;
+  }
+  .chart-y-axis {
+    position: absolute;
+    left: -44px; top: 0; bottom: 0;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+  }
+  .chart-y-label {
+    font-size: 11px; color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    width: 36px;
+  }
+  .chart-x-axis {
+    display: flex; justify-content: space-between;
+    margin-top: 8px; margin-left: 40px;
+  }
+  .chart-x-label { font-size: 11px; color: var(--text-tertiary); }
+
+  .chart-grid-line {
+    position: absolute;
+    left: 0; right: 0;
+    border-top: 1px dashed var(--border-light);
+  }
+
+  .chart-line-container {
+    position: absolute;
+    inset: 0;
+  }
+  .chart-line-container svg {
+    width: 100%; height: 100%;
+  }
+
+  /* ── Table ────────────────────────────────────────────── */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .table-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-title { font-size: 14px; font-weight: 600; }
+  .table-count {
+    font-size: 12px; color: var(--text-tertiary);
+    background: var(--bg);
+    padding: 2px 8px; border-radius: 10px;
+    margin-left: 8px;
+    font-weight: 500;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left;
+    font-size: 11.5px; font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  tbody td {
+    padding: 12px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #fafbfc; }
+
+  .content-title {
+    font-weight: 500; color: var(--text-primary);
+    max-width: 280px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: block;
+  }
+  .content-subtitle {
+    font-size: 11.5px; color: var(--text-tertiary);
+    margin-top: 1px;
+  }
+
+  .platform-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .3px;
+  }
+  .platform-badge.linkedin { background: #e8f4fd; color: #0a66c2; }
+  .platform-badge.ghost { background: #f3f0ff; color: #7c5cfc; }
+  .platform-badge.substack { background: #fff4e6; color: #ff6719; }
+  .platform-badge.medium { background: #f0f0f0; color: #242424; }
+
+  .table-num { font-variant-numeric: tabular-nums; color: var(--text-primary); }
+  .table-secondary { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+  /* ── Ideas View ───────────────────────────────────────── */
+  .ideas-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 20px;
+    height: calc(100vh - var(--topbar-h) - 48px);
+  }
+
+  .ideas-list-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .ideas-list-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .ideas-list-title { font-size: 14px; font-weight: 600; }
+  .ideas-list-filters { display: flex; gap: 4px; }
+  .ideas-filter-chip {
+    padding: 4px 10px;
+    font-size: 11.5px; font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: var(--font);
+  }
+  .ideas-filter-chip.active {
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-color: transparent;
+  }
+
+  .ideas-list {
+    flex: 1; overflow-y: auto;
+  }
+  .idea-item {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: background .1s ease;
+  }
+  .idea-item:hover { background: #fafbfc; }
+  .idea-item.active { background: var(--accent-bg); border-left: 3px solid var(--accent); }
+
+  .idea-top-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .idea-title {
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 400px;
+  }
+  .idea-date { font-size: 11px; color: var(--text-tertiary); white-space: nowrap; }
+  .idea-excerpt {
+    font-size: 12.5px; color: var(--text-secondary);
+    line-height: 1.45;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .idea-meta {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .idea-status {
+    font-size: 11px; font-weight: 500;
+    padding: 2px 7px; border-radius: 4px;
+  }
+  .idea-status.draft { background: #fef3cd; color: #856404; }
+  .idea-status.published { background: var(--green-bg); color: var(--green); }
+  .idea-status.idea { background: var(--accent-bg); color: var(--accent); }
+  .idea-status.review { background: #e0e7ff; color: #4338ca; }
+
+  /* ── AI Panel ─────────────────────────────────────────── */
+  .ai-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .ai-panel-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ai-panel-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 2px var(--green-bg);
+  }
+  .ai-panel-title {
+    font-size: 13px; font-weight: 600;
+  }
+  .ai-panel-subtitle {
+    font-size: 11px; color: var(--text-tertiary); margin-left: auto;
+  }
+
+  .ai-messages {
+    flex: 1; overflow-y: auto;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .ai-msg {
+    max-width: 90%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .ai-msg.assistant {
+    background: var(--bg);
+    color: var(--text-primary);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .ai-msg.user {
+    background: var(--accent);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .ai-msg .msg-meta {
+    font-size: 10.5px; margin-top: 4px;
+    opacity: .55;
+  }
+  .ai-msg.assistant .msg-meta { color: var(--text-tertiary); }
+  .ai-msg.user .msg-meta { color: rgba(255,255,255,.6); }
+
+  .ai-suggestions {
+    padding: 0 16px 12px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .ai-suggestion {
+    padding: 5px 10px;
+    font-size: 11.5px; font-weight: 500;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-family: var(--font);
+  }
+  .ai-suggestion:hover { background: var(--accent-bg); color: var(--accent); border-color: transparent; }
+
+  .ai-input-area {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px;
+  }
+  .ai-input {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    font-family: var(--font);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color .12s ease;
+  }
+  .ai-input:focus { border-color: var(--accent); }
+  .ai-input::placeholder { color: var(--text-tertiary); }
+
+  .ai-send {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    color: #fff;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background .12s ease;
+  }
+  .ai-send:hover { background: var(--accent-light); }
+  .ai-send svg { width: 16px; height: 16px; }
+
+  /* ── View toggle ──────────────────────────────────────── */
+  .view { display: none; }
+  .view.active { display: block; }
+  .view.ideas-view.active { display: block; }
+
+  /* ── Responsive ───────────────────────────────────────── */
+  @media (max-width: 1200px) {
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .ideas-layout { grid-template-columns: 1fr; }
+    .ai-panel { height: 400px; }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      transform: translateX(-100%);
+      box-shadow: 4px 0 24px rgba(0,0,0,.08);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay.open { display: block; }
+    .main { margin-left: 0; }
+    .hamburger { display: flex; }
+    .metrics-row { grid-template-columns: 1fr; }
+    .topbar-tabs { margin-left: 0; }
+    .page-content { padding: 16px; }
+    .ideas-layout { grid-template-columns: 1fr; height: auto; }
+    .ai-panel { height: 400px; }
+    .content-title { max-width: 160px; }
+    .chart-area { height: 160px; }
+  }
+
+  /* ── Scrollbar ────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+</style>
+</head>
+<body>
+
+<!-- ── Sidebar Overlay (mobile) ────────────────────────── -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="layout">
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">CM</div>
+      <span class="logo-text">Christie Mealo</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Analytics</div>
+
+      <a class="nav-item active" data-nav="overview" onclick="setActiveNav(this)">
+        <span class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/>
+            <rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/>
+          </svg>
+        </span>
+        Overview
+      </a>
+
+      <div class="nav-section-label">Platforms</div>
+
+      <a class="nav-item" data-nav="linkedin" onclick="setActiveNav(this)">
+        <span class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 1.5A1.5 1.5 0 013.5 0h9A1.5 1.5 0 0114 1.5v13a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 012 14.5v-13zm3 4.5H3.5v7H5V6zm-.75-2.5a.875.875 0 100 1.75.875.875 0 000-1.75zM8.5 6H7v7h1.5V9.75c0-.75.25-1.25 1-1.25s.75.5.75 1.25V13H12V9.25c0-1.75-.75-2.75-2.25-2.75-.75 0-1.25.5-1.25.5V6z"/></svg>
+        </span>
+        LinkedIn
+        <span class="badge">24</span>
+      </a>
+
+      <a class="nav-item" data-nav="ghost" onclick="setActiveNav(this)">
+        <span class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C4.4 0 1.5 2.9 1.5 6.5v7c0 1.1.4 2 1.1 2.3.3.1.6 0 .9-.2l1.2-1.2c.2-.2.5-.2.7 0l1.2 1.2c.2.2.5.2.7 0L8.5 14.4c.2-.2.5-.2.7 0l1.2 1.2c.2.2.5.2.7 0l1.2-1.2c.2-.2.5-.2.7 0l1.2 1.2c.3.3.6.3.9.2.7-.3 1.1-1.2 1.1-2.3v-7C14.5 2.9 11.6 0 8 0zM5.5 8a1 1 0 110-2 1 1 0 010 2zm5 0a1 1 0 110-2 1 1 0 010 2z"/></svg>
+        </span>
+        Ghost
+        <span class="badge">8</span>
+      </a>
+
+      <a class="nav-item" data-nav="substack" onclick="setActiveNav(this)">
+        <span class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 3.5H2V5h12V3.5zM2 7h12v1.5H2V7zM2 10.5h12V16L8 13l-6 3V10.5z"/></svg>
+        </span>
+        Substack
+        <span class="badge">12</span>
+      </a>
+
+      <a class="nav-item" data-nav="medium" onclick="setActiveNav(this)">
+        <span class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="currentColor"><ellipse cx="4.5" cy="8" rx="3.5" ry="4.5"/><ellipse cx="10.5" cy="8" rx="2" ry="4.2"/><ellipse cx="14" cy="8" rx="1" ry="3.8"/></svg>
+        </span>
+        Medium
+        <span class="badge">6</span>
+      </a>
+
+      <div class="nav-section-label">Workspace</div>
+
+      <a class="nav-item" data-nav="ideas" onclick="setActiveNav(this); switchView('ideas')">
+        <span class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 1a5 5 0 013 9v1.5a1 1 0 01-1 1H6a1 1 0 01-1-1V10A5 5 0 018 1z"/>
+            <path d="M6 14h4"/>
+          </svg>
+        </span>
+        Ideas
+        <span class="badge">5</span>
+      </a>
+
+      <a class="nav-item" data-nav="settings" onclick="setActiveNav(this)">
+        <span class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="8" cy="8" r="2.5"/><path d="M13.3 10l.7 1.2a1 1 0 01-.3 1.3l-1.4.8a1 1 0 01-1.2-.1L10 12.5a4.5 4.5 0 01-1 .5l-.4 1.6a1 1 0 01-1 .8H6.4a1 1 0 01-1-.8L5 13a4.5 4.5 0 01-1-.5l-1.1.7a1 1 0 01-1.2.1l-1.4-.8a1 1 0 01-.3-1.3l.7-1.2a4.5 4.5 0 010-1l-.7-1.2a1 1 0 01.3-1.3l1.4-.8a1 1 0 011.2.1L4 6.5a4.5 4.5 0 011-.5l.4-1.6a1 1 0 011-.8h1.2a1 1 0 011 .8L10 5a4.5 4.5 0 011 .5l1.1-.7a1 1 0 011.2-.1l1.4.8a1 1 0 01.3 1.3L14 8a4.5 4.5 0 010 2l-.7 0z"/>
+          </svg>
+        </span>
+        Settings
+      </a>
+    </nav>
+
+    <div class="sidebar-profile">
+      <div class="avatar">CM</div>
+      <div class="profile-info">
+        <div class="profile-name">Christie Mealo</div>
+        <div class="profile-email">christie@christiemealo.com</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────────── -->
+  <div class="main">
+    <!-- ── Top Bar ───────────────────────────────────────── -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" onclick="toggleSidebar()">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2z"/></svg>
+        </button>
+        <h1 class="topbar-title">Overview</h1>
+        <div class="topbar-tabs">
+          <button class="topbar-tab active" onclick="switchView('performance', this)">Performance</button>
+          <button class="topbar-tab" onclick="switchView('ideas', this)">Ideas</button>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="date-selector">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3"/>
+          </svg>
+          May 1 – May 26, 2026
+        </button>
+        <button class="btn">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 2v8M4 7l4 4 4-4"/><path d="M2 12v1.5a1 1 0 001 1h10a1 1 0 001-1V12"/>
+          </svg>
+          Export
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Performance View ──────────────────────────────── -->
+    <div class="page-content">
+      <div class="view performance-view active" id="performanceView">
+
+        <!-- Metric Cards -->
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-label">Total Reach</div>
+            <div class="metric-value-row">
+              <span class="metric-value">45,231</span>
+              <span class="metric-change up">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10V2M3 5l3-3 3 3"/></svg>
+                12.3%
+              </span>
+            </div>
+            <div class="metric-sparkline">
+              <div class="sparkline-bar" style="height:40%"></div>
+              <div class="sparkline-bar" style="height:55%"></div>
+              <div class="sparkline-bar" style="height:45%"></div>
+              <div class="sparkline-bar" style="height:60%"></div>
+              <div class="sparkline-bar" style="height:50%"></div>
+              <div class="sparkline-bar" style="height:70%"></div>
+              <div class="sparkline-bar" style="height:65%"></div>
+              <div class="sparkline-bar" style="height:80%"></div>
+              <div class="sparkline-bar" style="height:75%"></div>
+              <div class="sparkline-bar" style="height:90%"></div>
+              <div class="sparkline-bar" style="height:85%"></div>
+              <div class="sparkline-bar" style="height:100%"></div>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Engagement Rate</div>
+            <div class="metric-value-row">
+              <span class="metric-value">4.2%</span>
+              <span class="metric-change up">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10V2M3 5l3-3 3 3"/></svg>
+                0.8%
+              </span>
+            </div>
+            <div class="metric-sparkline">
+              <div class="sparkline-bar" style="height:60%"></div>
+              <div class="sparkline-bar" style="height:50%"></div>
+              <div class="sparkline-bar" style="height:65%"></div>
+              <div class="sparkline-bar" style="height:55%"></div>
+              <div class="sparkline-bar" style="height:70%"></div>
+              <div class="sparkline-bar" style="height:75%"></div>
+              <div class="sparkline-bar" style="height:60%"></div>
+              <div class="sparkline-bar" style="height:80%"></div>
+              <div class="sparkline-bar" style="height:70%"></div>
+              <div class="sparkline-bar" style="height:85%"></div>
+              <div class="sparkline-bar" style="height:90%"></div>
+              <div class="sparkline-bar" style="height:88%"></div>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">New Subscribers</div>
+            <div class="metric-value-row">
+              <span class="metric-value">127</span>
+              <span class="metric-change up">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10V2M3 5l3-3 3 3"/></svg>
+                23%
+              </span>
+            </div>
+            <div class="metric-sparkline">
+              <div class="sparkline-bar" style="height:30%"></div>
+              <div class="sparkline-bar" style="height:35%"></div>
+              <div class="sparkline-bar" style="height:45%"></div>
+              <div class="sparkline-bar" style="height:40%"></div>
+              <div class="sparkline-bar" style="height:55%"></div>
+              <div class="sparkline-bar" style="height:50%"></div>
+              <div class="sparkline-bar" style="height:60%"></div>
+              <div class="sparkline-bar" style="height:65%"></div>
+              <div class="sparkline-bar" style="height:75%"></div>
+              <div class="sparkline-bar" style="height:80%"></div>
+              <div class="sparkline-bar" style="height:85%"></div>
+              <div class="sparkline-bar" style="height:100%"></div>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Posts Published</div>
+            <div class="metric-value-row">
+              <span class="metric-value">18</span>
+              <span class="metric-change down">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v8M3 7l3 3 3-3"/></svg>
+                2
+              </span>
+            </div>
+            <div class="metric-sparkline">
+              <div class="sparkline-bar" style="height:80%"></div>
+              <div class="sparkline-bar" style="height:90%"></div>
+              <div class="sparkline-bar" style="height:100%"></div>
+              <div class="sparkline-bar" style="height:85%"></div>
+              <div class="sparkline-bar" style="height:75%"></div>
+              <div class="sparkline-bar" style="height:80%"></div>
+              <div class="sparkline-bar" style="height:70%"></div>
+              <div class="sparkline-bar" style="height:65%"></div>
+              <div class="sparkline-bar" style="height:55%"></div>
+              <div class="sparkline-bar" style="height:60%"></div>
+              <div class="sparkline-bar" style="height:50%"></div>
+              <div class="sparkline-bar" style="height:45%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Engagement Over Time</span>
+            <div class="chart-filters">
+              <button class="chart-filter active">All</button>
+              <button class="chart-filter">LinkedIn</button>
+              <button class="chart-filter">Ghost</button>
+              <button class="chart-filter">Substack</button>
+              <button class="chart-filter">Medium</button>
+            </div>
+          </div>
+          <div style="position: relative;">
+            <div class="chart-area" id="chartArea">
+              <!-- Grid lines -->
+              <div class="chart-grid-line" style="top: 0%"></div>
+              <div class="chart-grid-line" style="top: 25%"></div>
+              <div class="chart-grid-line" style="top: 50%"></div>
+              <div class="chart-grid-line" style="top: 75%"></div>
+
+              <!-- Y-axis -->
+              <div class="chart-y-axis">
+                <span class="chart-y-label">2.0K</span>
+                <span class="chart-y-label">1.5K</span>
+                <span class="chart-y-label">1.0K</span>
+                <span class="chart-y-label">500</span>
+                <span class="chart-y-label">0</span>
+              </div>
+
+              <!-- SVG chart line -->
+              <div class="chart-line-container">
+                <svg viewBox="0 0 800 220" preserveAspectRatio="none">
+                  <!-- Area fill -->
+                  <defs>
+                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#635bff" stop-opacity="0.12"/>
+                      <stop offset="100%" stop-color="#635bff" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,176 L62,154 L124,165 L186,132 L248,143 L310,110 L372,99 L434,88 L496,66 L558,77 L620,55 L682,44 L744,33 L800,22 L800,220 L0,220 Z" fill="url(#areaGrad)"/>
+                  <path d="M0,176 L62,154 L124,165 L186,132 L248,143 L310,110 L372,99 L434,88 L496,66 L558,77 L620,55 L682,44 L744,33 L800,22" fill="none" stroke="#635bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- Data points -->
+                  <circle cx="0" cy="176" r="3" fill="#fff" stroke="#635bff" stroke-width="2"/>
+                  <circle cx="124" cy="165" r="3" fill="#fff" stroke="#635bff" stroke-width="2"/>
+                  <circle cx="248" cy="143" r="3" fill="#fff" stroke="#635bff" stroke-width="2"/>
+                  <circle cx="372" cy="99" r="3" fill="#fff" stroke="#635bff" stroke-width="2"/>
+                  <circle cx="496" cy="66" r="3" fill="#fff" stroke="#635bff" stroke-width="2"/>
+                  <circle cx="620" cy="55" r="3" fill="#fff" stroke="#635bff" stroke-width="2"/>
+                  <circle cx="800" cy="22" r="3" fill="#fff" stroke="#635bff" stroke-width="2"/>
+
+                  <!-- Second line (LinkedIn) -->
+                  <path d="M0,187 L62,176 L124,187 L186,165 L248,176 L310,154 L372,143 L434,132 L496,110 L558,121 L620,99 L682,88 L744,77 L800,66" fill="none" stroke="#0a66c2" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+                </svg>
+              </div>
+            </div>
+            <!-- X-axis -->
+            <div class="chart-x-axis">
+              <span class="chart-x-label">May 1</span>
+              <span class="chart-x-label">May 4</span>
+              <span class="chart-x-label">May 8</span>
+              <span class="chart-x-label">May 12</span>
+              <span class="chart-x-label">May 16</span>
+              <span class="chart-x-label">May 20</span>
+              <span class="chart-x-label">May 26</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+          <div class="table-header">
+            <div style="display:flex;align-items:center;">
+              <span class="table-title">Recent Content Performance</span>
+              <span class="table-count">8 posts</span>
+            </div>
+            <button class="btn" style="font-size:12px; padding:5px 10px;">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M2 4h12M4 4V2.5A1.5 1.5 0 015.5 1h5A1.5 1.5 0 0112 2.5V4M6 8h4"/></svg>
+              Filter
+            </button>
+          </div>
+          <div style="overflow-x: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="min-width:280px">Content</th>
+                  <th>Platform</th>
+                  <th>Published</th>
+                  <th style="text-align:right">Views</th>
+                  <th style="text-align:right">Engagement</th>
+                  <th style="text-align:right">CTR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="content-title">Why Personal Branding Is the New Resume</span>
+                    <span class="content-subtitle">Newsletter issue #42</span>
+                  </td>
+                  <td><span class="platform-badge ghost">Ghost</span></td>
+                  <td class="table-secondary">May 24</td>
+                  <td class="table-num" style="text-align:right">8,412</td>
+                  <td class="table-num" style="text-align:right">6.2%</td>
+                  <td class="table-num" style="text-align:right">3.8%</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="content-title">I Spent 30 Days Building in Public. Here's What Happened.</span>
+                    <span class="content-subtitle">Long-form article</span>
+                  </td>
+                  <td><span class="platform-badge linkedin">LinkedIn</span></td>
+                  <td class="table-secondary">May 22</td>
+                  <td class="table-num" style="text-align:right">12,847</td>
+                  <td class="table-num" style="text-align:right">5.4%</td>
+                  <td class="table-num" style="text-align:right">2.1%</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="content-title">The Creator Economy Needs Better Tools, Not More Platforms</span>
+                    <span class="content-subtitle">Opinion piece</span>
+                  </td>
+                  <td><span class="platform-badge substack">Substack</span></td>
+                  <td class="table-secondary">May 20</td>
+                  <td class="table-num" style="text-align:right">3,291</td>
+                  <td class="table-num" style="text-align:right">7.8%</td>
+                  <td class="table-num" style="text-align:right">4.5%</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="content-title">How to Write a Newsletter That People Actually Read</span>
+                    <span class="content-subtitle">Tutorial</span>
+                  </td>
+                  <td><span class="platform-badge medium">Medium</span></td>
+                  <td class="table-secondary">May 18</td>
+                  <td class="table-num" style="text-align:right">5,603</td>
+                  <td class="table-num" style="text-align:right">3.9%</td>
+                  <td class="table-num" style="text-align:right">2.7%</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="content-title">3 LinkedIn Hooks That Got Me 10K+ Impressions</span>
+                    <span class="content-subtitle">Carousel post</span>
+                  </td>
+                  <td><span class="platform-badge linkedin">LinkedIn</span></td>
+                  <td class="table-secondary">May 15</td>
+                  <td class="table-num" style="text-align:right">10,234</td>
+                  <td class="table-num" style="text-align:right">4.1%</td>
+                  <td class="table-num" style="text-align:right">1.9%</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="content-title">The Myth of "Consistency" in Content Creation</span>
+                    <span class="content-subtitle">Newsletter issue #41</span>
+                  </td>
+                  <td><span class="platform-badge ghost">Ghost</span></td>
+                  <td class="table-secondary">May 12</td>
+                  <td class="table-num" style="text-align:right">6,118</td>
+                  <td class="table-num" style="text-align:right">5.1%</td>
+                  <td class="table-num" style="text-align:right">3.3%</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="content-title">What Substack Gets Right About Community</span>
+                    <span class="content-subtitle">Analysis</span>
+                  </td>
+                  <td><span class="platform-badge substack">Substack</span></td>
+                  <td class="table-secondary">May 9</td>
+                  <td class="table-num" style="text-align:right">2,876</td>
+                  <td class="table-num" style="text-align:right">8.3%</td>
+                  <td class="table-num" style="text-align:right">5.1%</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="content-title">Stop Treating Your Audience Like a Metric</span>
+                    <span class="content-subtitle">Essay</span>
+                  </td>
+                  <td><span class="platform-badge medium">Medium</span></td>
+                  <td class="table-secondary">May 6</td>
+                  <td class="table-num" style="text-align:right">4,450</td>
+                  <td class="table-num" style="text-align:right">3.5%</td>
+                  <td class="table-num" style="text-align:right">2.4%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Ideas View ────────────────────────────────────── -->
+      <div class="view ideas-view" id="ideasView">
+        <div class="ideas-layout">
+
+          <!-- Article List -->
+          <div class="ideas-list-panel">
+            <div class="ideas-list-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span class="ideas-list-title">Content Pipeline</span>
+              </div>
+              <div class="ideas-list-filters">
+                <button class="ideas-filter-chip active">All</button>
+                <button class="ideas-filter-chip">Ideas</button>
+                <button class="ideas-filter-chip">Drafts</button>
+                <button class="ideas-filter-chip">Review</button>
+                <button class="ideas-filter-chip">Published</button>
+              </div>
+            </div>
+            <div class="ideas-list">
+
+              <div class="idea-item active">
+                <div class="idea-top-row">
+                  <span class="idea-title">AI-Powered Content Repurposing: A Framework</span>
+                  <span class="idea-date">Today</span>
+                </div>
+                <div class="idea-excerpt">Turn one long-form piece into 12+ pieces of content across platforms. The systematic approach I use to maximize every article I write without burning out.</div>
+                <div class="idea-meta">
+                  <span class="platform-badge ghost" style="font-size:10px;padding:2px 6px;">Ghost</span>
+                  <span class="platform-badge linkedin" style="font-size:10px;padding:2px 6px;">LinkedIn</span>
+                  <span class="idea-status draft">Draft</span>
+                </div>
+              </div>
+
+              <div class="idea-item">
+                <div class="idea-top-row">
+                  <span class="idea-title">The LinkedIn Algorithm Changed Again. Here's What Matters.</span>
+                  <span class="idea-date">Yesterday</span>
+                </div>
+                <div class="idea-excerpt">Breaking down the May 2026 algorithm shift. Dwell time is now weighted 3x more than reactions. What this means for your posting strategy.</div>
+                <div class="idea-meta">
+                  <span class="platform-badge linkedin" style="font-size:10px;padding:2px 6px;">LinkedIn</span>
+                  <span class="idea-status review">Review</span>
+                </div>
+              </div>
+
+              <div class="idea-item">
+                <div class="idea-top-row">
+                  <span class="idea-title">Newsletter Monetization Without Selling Your Soul</span>
+                  <span class="idea-date">May 23</span>
+                </div>
+                <div class="idea-excerpt">Exploring sponsorship models, paid tiers, and community-funded newsletters. Real numbers from my own experiments across Ghost and Substack.</div>
+                <div class="idea-meta">
+                  <span class="platform-badge substack" style="font-size:10px;padding:2px 6px;">Substack</span>
+                  <span class="platform-badge ghost" style="font-size:10px;padding:2px 6px;">Ghost</span>
+                  <span class="idea-status draft">Draft</span>
+                </div>
+              </div>
+
+              <div class="idea-item">
+                <div class="idea-top-row">
+                  <span class="idea-title">Building a Second Brain for Content Creators</span>
+                  <span class="idea-date">May 21</span>
+                </div>
+                <div class="idea-excerpt">My Notion + Readwise + Claude workflow for capturing, processing, and turning ideas into publishable content in under 2 hours.</div>
+                <div class="idea-meta">
+                  <span class="platform-badge medium" style="font-size:10px;padding:2px 6px;">Medium</span>
+                  <span class="idea-status idea">Idea</span>
+                </div>
+              </div>
+
+              <div class="idea-item">
+                <div class="idea-top-row">
+                  <span class="idea-title">Why Most "Personal Brand" Advice Is Wrong</span>
+                  <span class="idea-date">May 19</span>
+                </div>
+                <div class="idea-excerpt">The industry tells you to niche down, post daily, and optimize everything. But the most successful creators I know do the opposite. A contrarian take.</div>
+                <div class="idea-meta">
+                  <span class="platform-badge linkedin" style="font-size:10px;padding:2px 6px;">LinkedIn</span>
+                  <span class="platform-badge substack" style="font-size:10px;padding:2px 6px;">Substack</span>
+                  <span class="idea-status idea">Idea</span>
+                </div>
+              </div>
+
+              <div class="idea-item">
+                <div class="idea-top-row">
+                  <span class="idea-title">From 0 to 5K Subscribers: A Ghost Newsletter Case Study</span>
+                  <span class="idea-date">May 16</span>
+                </div>
+                <div class="idea-excerpt">The exact steps, timeline, and strategies I used to grow my Ghost newsletter. Including the 3 emails that drove the most conversions.</div>
+                <div class="idea-meta">
+                  <span class="platform-badge ghost" style="font-size:10px;padding:2px 6px;">Ghost</span>
+                  <span class="idea-status published">Published</span>
+                </div>
+              </div>
+
+              <div class="idea-item">
+                <div class="idea-top-row">
+                  <span class="idea-title">Medium in 2026: Still Worth It?</span>
+                  <span class="idea-date">May 14</span>
+                </div>
+                <div class="idea-excerpt">Honest look at Medium's Partner Program changes, distribution algorithm, and whether it still makes sense as a content channel for personal brands.</div>
+                <div class="idea-meta">
+                  <span class="platform-badge medium" style="font-size:10px;padding:2px 6px;">Medium</span>
+                  <span class="idea-status published">Published</span>
+                </div>
+              </div>
+
+              <div class="idea-item">
+                <div class="idea-top-row">
+                  <span class="idea-title">Content Pillars Are Dead. Try Content Clusters Instead.</span>
+                  <span class="idea-date">May 11</span>
+                </div>
+                <div class="idea-excerpt">Why rigid content pillars limit your growth and how topic clusters create a more organic, interconnected body of work that algorithms love.</div>
+                <div class="idea-meta">
+                  <span class="platform-badge linkedin" style="font-size:10px;padding:2px 6px;">LinkedIn</span>
+                  <span class="idea-status published">Published</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- AI Panel -->
+          <div class="ai-panel">
+            <div class="ai-panel-header">
+              <div class="ai-panel-dot"></div>
+              <span class="ai-panel-title">AI Writing Assistant</span>
+              <span class="ai-panel-subtitle">Claude 4 Opus</span>
+            </div>
+
+            <div class="ai-messages">
+              <div class="ai-msg assistant">
+                I see you're working on <strong>"AI-Powered Content Repurposing: A Framework."</strong> Great topic. Based on your recent performance data, repurposing content has driven 34% more engagement when adapted per platform rather than cross-posted verbatim.
+                <div class="msg-meta">2 min ago</div>
+              </div>
+
+              <div class="ai-msg user">
+                Can you outline the repurposing framework? I want to turn one Ghost newsletter into LinkedIn posts, Substack notes, and Medium articles.
+                <div class="msg-meta">1 min ago</div>
+              </div>
+
+              <div class="ai-msg assistant">
+                Here's a 4-stage framework:<br><br>
+                <strong>1. Core Asset</strong> — Write the deep-dive on Ghost (1,500-2,000 words)<br>
+                <strong>2. Extract Hooks</strong> — Pull 3-5 standalone insights for LinkedIn carousels<br>
+                <strong>3. Reframe for Substack</strong> — Add personal narrative + community question<br>
+                <strong>4. SEO Rewrite for Medium</strong> — Optimize title, add headers, target 1 keyword cluster<br><br>
+                Want me to draft the LinkedIn hooks from your current draft?
+                <div class="msg-meta">Just now</div>
+              </div>
+            </div>
+
+            <div class="ai-suggestions">
+              <button class="ai-suggestion">Draft LinkedIn hooks</button>
+              <button class="ai-suggestion">Optimize for SEO</button>
+              <button class="ai-suggestion">Suggest headline variants</button>
+              <button class="ai-suggestion">Analyze tone</button>
+            </div>
+
+            <div class="ai-input-area">
+              <input class="ai-input" type="text" placeholder="Ask about your content...">
+              <button class="ai-send">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2L7 9"/><path d="M14 2l-5 12-2-5-5-2 12-5z"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── View Switching ──────────────────────────────────────
+  function switchView(view, tabEl) {
+    // Update tabs
+    document.querySelectorAll('.topbar-tab').forEach(t => t.classList.remove('active'));
+    if (tabEl) {
+      tabEl.classList.add('active');
+    } else {
+      document.querySelectorAll('.topbar-tab').forEach(t => {
+        if (t.textContent.trim().toLowerCase() === view) t.classList.add('active');
+      });
+    }
+
+    // Update views
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    if (view === 'performance') {
+      document.getElementById('performanceView').classList.add('active');
+    } else if (view === 'ideas') {
+      document.getElementById('ideasView').classList.add('active');
+    }
+
+    // Update nav highlight
+    if (view === 'ideas') {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.querySelector('[data-nav="ideas"]').classList.add('active');
+    } else if (view === 'performance') {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.querySelector('[data-nav="overview"]').classList.add('active');
+    }
+  }
+
+  // ── Sidebar Nav ─────────────────────────────────────────
+  function setActiveNav(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+
+    const nav = el.getAttribute('data-nav');
+    if (nav === 'ideas') {
+      switchView('ideas');
+    } else if (nav === 'overview') {
+      switchView('performance');
+    }
+    // Close mobile sidebar
+    closeSidebar();
+  }
+
+  // ── Mobile Sidebar ──────────────────────────────────────
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  }
+
+  // ── Chart filter toggles ───────────────────────────────
+  document.querySelectorAll('.chart-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.chart-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // ── Ideas filter toggles ───────────────────────────────
+  document.querySelectorAll('.ideas-filter-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ideas-filter-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // ── Idea item selection ─────────────────────────────────
+  document.querySelectorAll('.idea-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.idea-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
