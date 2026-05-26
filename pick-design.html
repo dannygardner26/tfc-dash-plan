@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TFC Dashboard — Pick Your Design</title>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,700;1,6..72,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf9f7;
+      --surface: #ffffff;
+      --border: rgba(0,0,0,0.08);
+      --border-hover: rgba(0,0,0,0.18);
+      --text: #1a1917;
+      --text-dim: #6b6860;
+      --accent: #2563eb;
+      --serif: 'Newsreader', Georgia, serif;
+      --sans: 'Outfit', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .intro {
+      font-size: 1.05rem;
+      color: var(--text-dim);
+      max-width: 540px;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+    .designs {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .design-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+    }
+    .design-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 32px rgba(37,99,235,0.1);
+      transform: translateY(-2px);
+    }
+    .preview-wrap {
+      width: 100%;
+      height: 340px;
+      overflow: hidden;
+      background: #111;
+      position: relative;
+    }
+    .preview-wrap iframe {
+      width: 200%;
+      height: 680px;
+      border: none;
+      transform: scale(0.5);
+      transform-origin: 0 0;
+      pointer-events: none;
+    }
+    .preview-wrap::after {
+      content: 'Click to preview fullscreen';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.75rem;
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      color: white;
+      font-size: 0.8rem;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .design-card:hover .preview-wrap::after { opacity: 1; }
+    .design-info {
+      padding: 1.25rem 1.5rem;
+    }
+    .design-name {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .design-desc {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .design-tags {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.65rem;
+      flex-wrap: wrap;
+    }
+    .dtag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.05);
+      color: var(--text-dim);
+    }
+    .dtag.dark { background: #1a1917; color: #e8e2d9; }
+    .dtag.light { background: #fef3c7; color: #92400e; }
+
+    /* Overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+    .overlay.active { display: flex; }
+    .overlay iframe {
+      width: 92vw;
+      height: 88vh;
+      border: none;
+      border-radius: 12px;
+      background: #000;
+    }
+    .close-btn {
+      position: fixed;
+      top: 1rem;
+      right: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      cursor: pointer;
+      z-index: 1001;
+      display: none;
+      color: var(--text);
+    }
+    .overlay.active ~ .close-btn { display: block; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 600px) {
+      main { padding: 2rem 1rem 3rem; }
+      .preview-wrap { height: 200px; }
+      .preview-wrap iframe { height: 400px; }
+      .design-info { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <h1>Pick a design direction</h1>
+    <p class="intro">
+      Hi Christie — we mocked up 5 design directions for your dashboard.
+      Tap any to see it fullscreen. Let us know which vibe feels right
+      and we'll build from there.
+    </p>
+
+    <div class="designs">
+
+      <div class="design-card" onclick="open('designs/01-vercel-dark.html')">
+        <div class="preview-wrap">
+          <iframe src="designs/01-vercel-dark.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+        </div>
+        <div class="design-info">
+          <div class="design-name">Clean & Minimal</div>
+          <div class="design-desc">Pure black background, white text, zero clutter. Data speaks for itself. Inspired by developer tools like Vercel — ultra-clean, professional, focused entirely on the numbers.</div>
+          <div class="design-tags">
+            <span class="dtag dark">Dark theme</span>
+            <span class="dtag">Minimal</span>
+            <span class="dtag">Data-forward</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card" onclick="open('designs/02-linear-purple.html')">
+        <div class="preview-wrap">
+          <iframe src="designs/02-linear-purple.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+        </div>
+        <div class="design-info">
+          <div class="design-name">Purple & Polished</div>
+          <div class="design-desc">Deep navy background with violet accents and frosted-glass cards. Sidebar navigation. Smooth and modern — feels premium and organized. Inspired by project management tools like Linear.</div>
+          <div class="design-tags">
+            <span class="dtag dark">Dark theme</span>
+            <span class="dtag">Purple accents</span>
+            <span class="dtag">Sidebar nav</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card" onclick="open('designs/03-raycast-warm.html')">
+        <div class="preview-wrap">
+          <iframe src="designs/03-raycast-warm.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+        </div>
+        <div class="design-info">
+          <div class="design-name">Warm & Bright</div>
+          <div class="design-desc">Light cream background with warm coral accents. Airy, generous spacing, easy on the eyes. Great for quick morning check-ins on your phone. Feels approachable and premium without being heavy.</div>
+          <div class="design-tags">
+            <span class="dtag light">Light theme</span>
+            <span class="dtag">Warm tones</span>
+            <span class="dtag">Mobile-friendly</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card" onclick="open('designs/04-stripe-clean.html')">
+        <div class="preview-wrap">
+          <iframe src="designs/04-stripe-clean.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+        </div>
+        <div class="design-info">
+          <div class="design-name">Dense & Data-Rich</div>
+          <div class="design-desc">Light gray background, lots of information on screen at once. Numbers are big and prominent with change indicators. Sidebar + detailed tables. Best if you want to see everything at a glance without scrolling.</div>
+          <div class="design-tags">
+            <span class="dtag light">Light theme</span>
+            <span class="dtag">Info-dense</span>
+            <span class="dtag">Tables & charts</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card" onclick="open('designs/05-gradient-modern.html')">
+        <div class="preview-wrap">
+          <iframe src="designs/05-gradient-modern.html" loading="lazy" sandbox="allow-same-origin"></iframe>
+        </div>
+        <div class="design-info">
+          <div class="design-name">Bold & Expressive</div>
+          <div class="design-desc">Dark background with colorful gradient accents — blue, purple, pink. Animated effects and bold typography. The most visually striking option. Makes the dashboard feel like a premium product, not a spreadsheet.</div>
+          <div class="design-tags">
+            <span class="dtag dark">Dark theme</span>
+            <span class="dtag">Gradients</span>
+            <span class="dtag">Animated</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      TFC Dashboard &middot; Danny Gardner &amp; Kush Behl &middot; Philly AI Lab 2026
+    </footer>
+  </main>
+
+  <div class="overlay" id="ov" onclick="close()"></div>
+  <button class="close-btn" id="cb" onclick="close()">Close preview</button>
+
+  <script>
+    function open(src) {
+      const ov = document.getElementById('ov');
+      ov.innerHTML = '<iframe src="' + src + '" sandbox="allow-same-origin allow-scripts"></iframe>';
+      ov.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      const ov = document.getElementById('ov');
+      ov.classList.remove('active');
+      ov.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  </script>
+
+</body>
+</html>
